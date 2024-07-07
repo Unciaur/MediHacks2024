@@ -14,6 +14,11 @@ public class Message {
         this.content = content;
     }
 
+    @JsonProperty("role")
+    public String getRole() {
+        return role;
+    }
+
     public String getContent() {
         return content;
     }

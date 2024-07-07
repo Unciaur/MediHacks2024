@@ -37,5 +37,7 @@ public class ChatResponse {
         public OpenAiApi.ChatCompletionMessage getMessage() {
             return message;
         }
+
+
     }
 }
