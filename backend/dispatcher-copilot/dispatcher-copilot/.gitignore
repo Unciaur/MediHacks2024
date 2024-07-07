@@ -32,3 +32,6 @@ build/
 
 ### VS Code ###
 .vscode/
+
+
+/backend/dispatcher-copilot/dispatcher-copilot/src/main/resources/application.properties
