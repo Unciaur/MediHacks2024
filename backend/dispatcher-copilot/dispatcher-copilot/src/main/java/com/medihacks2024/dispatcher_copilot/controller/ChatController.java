@@ -1,5 +1,9 @@
 package com.medihacks2024.dispatcher_copilot.controller;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.medihacks2024.dispatcher_copilot.service.MessageService;
 import com.medihacks2024.dispatcher_copilot.templates.*;
 import org.springframework.ai.openai.api.OpenAiApi;
@@ -55,22 +59,20 @@ public class ChatController {
         }).whenComplete((result, throwable) -> {
             if (throwable != null) {
                 output.setErrorResult(ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(throwable.getMessage()));
-                //} else if (result == null || result.getChoices() == null || result.getChoices().isEmpty()) {
-                //output.setResult(ResponseEntity.ok("No response"));
             } else {
-                // get the first Choice
-                //OpenAiApi.ChatCompletionMessage choice = result.getChoices().get(0);
+                try {
+                    // Parse the raw JSON response to a JsonNode
+                    ObjectMapper objectMapper = new ObjectMapper();
+                    JsonNode jsonNode = objectMapper.readTree(result);
 
-                // print the Choice's message
-                //System.out.println(choice.content());
-                System.out.println(result);
-                // check if the Choice's message is null
-                //if (choice.content() == null) {
-                //output.setResult(ResponseEntity.ok("No message"));
-                //} else {
-                // return the content of the Choice's message
-                output.setResult(ResponseEntity.ok(result));
-                //}
+                    // Extract the content field from the JsonNode
+                    String content = jsonNode.path("choices").get(0).path("message").path("content").asText();
+
+                    // Set the result to the content
+                    output.setResult(ResponseEntity.ok(content));
+                } catch (JsonProcessingException e) {
+                    output.setErrorResult(ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage()));
+                }
             }
         });
 
