@@ -69,7 +69,7 @@
                             if (transcript && received.is_final) {
                                 console.log(transcript);
                                 document.querySelector('#transcript').textContent += transcript + ' ';
-                                const encodedTranscript = encodeURIComponent(transcript);
+                                const encodedTranscript = encodeURIComponent(document.querySelector('#transcript').textContent);
                                 const url = `https://api.letssign.xyz/chat?prompt=${encodedTranscript}`;
                                 fetch(url)
                                     .then(response => {
