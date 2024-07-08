@@ -96,6 +96,7 @@
                                 }
                             };
                             socket.onclose = () => {
+                                mediaRecorder.stop();
                                 console.log('WebSocket Disconnected');
                                 document.querySelector('#status').textContent = 'Not Connected';
                             };
