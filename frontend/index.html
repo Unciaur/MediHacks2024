@@ -31,8 +31,6 @@
           mediaRecorder.start(1000)
         }
 
-        const url = `http://71.173.144.129:9823/chat?prompt=${encodedTranscript}`;
-
           socket.onmessage = (message) => {
               const received = JSON.parse(message.data);
               const transcript = received.channel.alternatives[0].transcript;
@@ -40,8 +38,7 @@
                   console.log(transcript);
                   const encodedTranscript = encodeURIComponent(transcript);
                   document.querySelector('#transcript').textContent += transcript + ' ';
-
-                  const url = "http://71.173.144.129:9823/chat?prompt=" + encodedTranscript;
+                  const url = `http://71.173.144.129:9823/chat?prompt=${encodedTranscript}`;
                   fetch(url)
                       .then(response => {
                           if (!response.ok) {
@@ -57,7 +54,6 @@
                           console.error('There was a problem with your fetch operation:', error);
                       });
               }
-          };
 
         socket.onclose = () => {
           console.log({ event: 'onclose' })
