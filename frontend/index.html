@@ -16,7 +16,7 @@
         })
         const socket = new WebSocket('wss://api.deepgram.com/v1/listen', [
           'token',
-          '69bdc868a74205816a0617e7024be1fcb8ce3e95',
+          '69bdc868a74205816a0617e7024be1fcb8ce3e95', 'model', 'Nova-2'
         ])
         socket.onopen = () => {
           document.querySelector('#status').textContent = 'Connected'
