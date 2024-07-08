@@ -36,7 +36,7 @@
                 const transcript = received.channel.alternatives[0].transcript;
                 if (transcript && received.is_final) {
                     console.log(transcript);
-                    const encodedTranscript = encodeURIComponent(transcript);
+                    const encodedTranscript = encodeURIComponent(document.querySelector('#transcript').textContent);
                     document.querySelector('#transcript').textContent += transcript + ' ';
                     const url = `https://api.letssign.xyz/chat?prompt=${encodedTranscript}`;
                     fetch(url)
