@@ -10,12 +10,16 @@ public class ChatRequest {
     private String model;
     private List<Message> messages;
     private int temperature;
+    private int minTokens;
+    private int maxTokens;
 
     @JsonCreator
     public ChatRequest(@JsonProperty("model") String model, @JsonProperty("messages") List<Message> messages) {
         this.model = model;
         this.messages = messages;
         this.temperature = 0;
+        this.minTokens = 5;
+        this.maxTokens = 100;
     }
 
     public ChatRequest() {
@@ -50,5 +54,25 @@ public class ChatRequest {
     @JsonProperty("temperature")
     public void setTemperature(int temperature) {
         this.temperature = temperature;
+    }
+
+    @JsonProperty("min_tokens")
+    public int getMinTokens() {
+        return minTokens;
+    }
+
+    @JsonProperty("min_tokens")
+    public void setMinTokens(int minTokens) {
+        this.minTokens = minTokens;
+    }
+
+    @JsonProperty("max_tokens")
+    public int getMaxTokens() {
+        return maxTokens;
+    }
+
+    @JsonProperty("max_tokens")
+    public void setMaxTokens(int maxTokens) {
+        this.maxTokens = maxTokens;
     }
 }
