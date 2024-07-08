@@ -38,13 +38,7 @@
             const startButton = document.getElementById('startButton');
             let socket = null;
             let isRecording = false;
-            navigator.mediaDevices.getUserMedia({ audio: true }).then((stream) => {
-                console.log({ stream });
-                if (!MediaRecorder.isTypeSupported('audio/webm'))
-                    return alert('Browser not supported');
-                const mediaRecorder = new MediaRecorder(stream, {
-                    mimeType: 'audio/webm',
-            });
+
             function manageWebSocketConnection(shouldConnect) {
                 if (shouldConnect) {
                     if (!socket || socket.readyState !== WebSocket.OPEN) {
