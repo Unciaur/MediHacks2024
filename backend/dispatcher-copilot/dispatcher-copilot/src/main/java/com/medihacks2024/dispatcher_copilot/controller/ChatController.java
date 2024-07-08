@@ -46,8 +46,9 @@ public class ChatController {
 
         // create a request
         ChatRequest request = new ChatRequest();
-        request.setModel("meta-llama/Meta-Llama-3-8B-Instruct");
+        request.setModel("Qwen/Qwen2-7B-Instruct");
         List<Message> messages = new ArrayList<>();
+        messages.add(new Message("system", "Extrapolate the name, address, and reason for call from the user's prompt."));
         messages.add(new Message("user", prompt));
         request.setMessages(messages);
 

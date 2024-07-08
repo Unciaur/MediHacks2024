@@ -9,11 +9,13 @@ public class ChatRequest {
 
     private String model;
     private List<Message> messages;
+    private int temperature;
 
     @JsonCreator
     public ChatRequest(@JsonProperty("model") String model, @JsonProperty("messages") List<Message> messages) {
         this.model = model;
         this.messages = messages;
+        this.temperature = 0;
     }
 
     public ChatRequest() {
@@ -38,5 +40,15 @@ public class ChatRequest {
     @JsonProperty("messages")
     public void setMessages(List<Message> messages) {
         this.messages = messages;
+    }
+
+    @JsonProperty("temperature")
+    public int getTemperature() {
+        return temperature;
+    }
+
+    @JsonProperty("temperature")
+    public void setTemperature(int temperature) {
+        this.temperature = temperature;
     }
 }
