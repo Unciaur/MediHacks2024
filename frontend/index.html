@@ -64,31 +64,35 @@
                                 mediaRecorder.start(1000);
                             };
                             socket.onmessage = (message) => {
-                                const received = JSON.parse(message.data);
-                                if (received.channel && received.channel.alternatives && received.channel.alternatives.length > 0) {
-                                    const transcript = received.channel.alternatives[0].transcript;
-                                    if (transcript && received.is_final) {
-                                        console.log(transcript);
-                                        document.querySelector('#transcript').textContent += transcript + ' ';
-                                        const encodedTranscript = encodeURIComponent(document.querySelector('#transcript').textContent);
-                                        const url = `https://api.letssign.xyz/chat?prompt=${encodedTranscript}`;
-                                        fetch(url)
-                                            .then(response => {
-                                                if (!response.ok) {
-                                                    throw new Error('Network response was not ok');
-                                                }
-                                                return response.text();
-                                            })
-                                            .then(data => {
-                                                console.log(data);
-                                                document.querySelector('#response').textContent = data;
-                                            })
-                                            .catch(error => {
-                                                console.error('There was a problem with your fetch operation:', error);
-                                            });
+                                try {
+                                    const received = JSON.parse(message.data);
+                                    if (received.channel && received.channel.alternatives && received.channel.alternatives.length > 0) {
+                                        const transcript = received.channel.alternatives[0].transcript;
+                                        if (transcript && received.is_final) {
+                                            console.log(transcript);
+                                            document.querySelector('#transcript').textContent += transcript + ' ';
+                                            const encodedTranscript = encodeURIComponent(document.querySelector('#transcript').textContent);
+                                            const url = `https://api.letssign.xyz/chat?prompt=${encodedTranscript}`;
+                                            fetch(url)
+                                                .then(response => {
+                                                    if (!response.ok) {
+                                                        throw new Error('Network response was not ok');
+                                                    }
+                                                    return response.text();
+                                                })
+                                                .then(data => {
+                                                    console.log(data);
+                                                    document.querySelector('#response').textContent = data;
+                                                })
+                                                .catch(error => {
+                                                    console.error('There was a problem with your fetch operation:', error);
+                                                });
+                                        }
+                                    } else {
+                                        console.log('Received message does not contain expected data.');
                                     }
-                                } else {
-                                    console.log('Received message does not contain expected data.');
+                                } catch (error) {
+                                    console.error('Error processing message:', error);
                                 }
                             };
                             socket.onclose = () => {
@@ -105,6 +109,7 @@
                 } else {
                     if (socket && socket.readyState === WebSocket.OPEN) {
                         socket.close();
+                        socket = null;
                         document.querySelector('#status').textContent = 'Not Connected';
                         console.log('WebSocket Disconnected');
                     }
