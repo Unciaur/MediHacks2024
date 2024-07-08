@@ -53,19 +53,23 @@
             startButton.textContent = 'Stop Recording';
             isRecording = true;
         };
-    
+
         recognition.onresult = (event) => {
             const transcript = event.results[0][0].transcript;
             const p = document.createElement('p');
             p.textContent = `${outputDiv.lastChild.textContent.trim()} ${transcript}`;
             outputDiv.lastChild.textContent = p.textContent;
+            const hiddenTranscriptionDiv = document.getElementById('hiddenTranscription');
+            hiddenTranscriptionDiv.textContent += ` ${transcript}`;
         };
-    
+
         recognition.onend = () => {
             startButton.textContent = 'Start Voice Input';
             isRecording = false;
         };
-    
+
+        recognition.continuous = true;
+
         startButton.addEventListener('click', () => {
             if (isRecording) {
                 recognition.stop();
