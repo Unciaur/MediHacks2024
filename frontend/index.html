@@ -6,6 +6,7 @@
   <body>
     <p id="status">Not Connected</p>
     <p id="transcript"></p>
+    <p id="response"></p>
     <script>
       navigator.mediaDevices.getUserMedia({ audio: true }).then((stream) => {
         console.log({ stream })
@@ -30,14 +31,32 @@
           mediaRecorder.start(1000)
         }
 
+        const url = `http://71.173.144.129:9823/chat?prompt=${encodedTranscript}`;
+
         socket.onmessage = (message) => {
           const received = JSON.parse(message.data)
           const transcript = received.channel.alternatives[0].transcript
           if (transcript && received.is_final) {
             console.log(transcript)
+            const encodedTranscript = encodeURIComponent(transcript);
             document.querySelector('#transcript').textContent +=
               transcript + ' '
+              fetch(url)
+                  .then(response => {
+                      if (!response.ok) {
+                          throw new Error('Network response was not ok');
+                      }
+                      return response.text();
+                  })
+                  .then(data => {
+                      console.log(data);
+                      document.querySelector('#response').textContent = data;
+                  })
+                  .catch(error => {
+                      console.error('There was a problem with your fetch operation:', error);
+                  });
           }
+
         }
 
         socket.onclose = () => {
