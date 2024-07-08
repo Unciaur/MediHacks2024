@@ -30,57 +30,46 @@
     </div>
 
     <script>
-        const startButton = document.getElementById('startButton');
-        const outputDiv = document.getElementById('output');
-    
-        const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition || window.mozSpeechRecognition || window.msSpeechRecognition)();
-        recognition.lang = 'en-US';
-    
-        let isRecording = false;
-    
-        recognition.onstart = () => {
-            const now = new Date();
-            const year = now.getFullYear();
-            const month = String(now.getMonth() + 1).padStart(2, '0'); // Month is zero-indexed
-            const day = String(now.getDate()).padStart(2, '0');
-            const hour = String(now.getHours()).padStart(2, '0');
-            const minute = String(now.getMinutes()).padStart(2, '0');
-            const second = String(now.getSeconds()).padStart(2, '0');
-            
-            const timestamp = `${year}/${month}/${day}/${hour}:${minute}:${second}`;
-            
-            outputDiv.innerHTML += `<p>${timestamp} > </p>`;
-            startButton.textContent = 'Stop Recording';
-            isRecording = true;
-        };
-
-        recognition.onresult = (event) => {
-            const transcript = event.results[0][0].transcript;
-            const p = document.createElement('p');
-            p.textContent = `${outputDiv.lastChild.textContent.trim()} ${transcript}`;
-            outputDiv.lastChild.textContent = p.textContent;
-            const hiddenTranscriptionDiv = document.getElementById('hiddenTranscription');
-            hiddenTranscriptionDiv.textContent += ` ${transcript}`;
-        };
-
-        recognition.onend = () => {
-            if (isRecording) {
-                recognition.start();
-            } else {
-                startButton.textContent = 'Start Voice Input';
+        navigator.mediaDevices.getUserMedia({ audio: true }).then((stream) => {
+          console.log({ stream })
+          if (!MediaRecorder.isTypeSupported('audio/webm'))
+            return alert('Browser not supported')
+          const mediaRecorder = new MediaRecorder(stream, {
+            mimeType: 'audio/webm',
+          })
+          const socket = new WebSocket('wss://api.deepgram.com/v1/listen', [
+            'token',
+            'e4de9003ed891a647e4d48cb6e0d69fa7872cd24',
+          ])
+          socket.onopen = () => {
+            document.querySelector('#status').textContent = 'Connected'
+            console.log({ event: 'onopen' })
+            mediaRecorder.addEventListener('dataavailable', async (event) => {
+              if (event.data.size > 0 && socket.readyState == 1) {
+                socket.send(event.data)
+              }
+            })
+            mediaRecorder.start(1000)
+          }
+  
+          socket.onmessage = (message) => {
+            const received = JSON.parse(message.data)
+            const transcript = received.channel.alternatives[0].transcript
+            if (transcript && received.is_final) {
+              console.log(transcript)
+              document.querySelector('#transcript').textContent +=
+                transcript + ' '
             }
-        };
-
-        startButton.addEventListener('click', () => {
-            if (isRecording) {
-                recognition.stop();
-                isRecording = false;
-            } else {
-                recognition.start();
-                isRecording = true;
-                startButton.textContent = 'Stop Recording';
-            }
-        });
+          }
+  
+          socket.onclose = () => {
+            console.log({ event: 'onclose' })
+          }
+  
+          socket.onerror = (error) => {
+            console.log({ event: 'onerror', error })
+          }
+        })
     </script>
 
 
