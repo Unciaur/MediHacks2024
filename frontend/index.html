@@ -105,7 +105,6 @@
                 } else {
                     if (socket && socket.readyState === WebSocket.OPEN) {
                         socket.close();
-                        socket = null;
                         document.querySelector('#status').textContent = 'Not Connected';
                         console.log('WebSocket Disconnected');
                     }
