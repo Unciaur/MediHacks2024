@@ -38,7 +38,7 @@
                     console.log(transcript);
                     const encodedTranscript = encodeURIComponent(transcript);
                     document.querySelector('#transcript').textContent += transcript + ' ';
-                    const url = `https://api.letssing.xyz/chat?prompt=${encodedTranscript}`;
+                    const url = `https://api.letssign.xyz/chat?prompt=${encodedTranscript}`;
                     fetch(url)
                         .then(response => {
                             if (!response.ok) {
