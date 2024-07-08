@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chat Interface</title>
+</head>
+<body>
+    <h1>Chat Interface</h1>
+    
+    <div>
+        <label for="prompt">Enter your prompt:</label>
+        <input type="text" id="prompt" name="prompt">
+        <button onclick="sendPrompt()">Send</button>
+    </div>
+    
+    <div id="response"></div>
+
+    <script>
+        function sendPrompt() {
+            var prompt = document.getElementById('prompt').value;
+            
+            // Send a GET request to your Spring Boot endpoint
+            fetch('/chat?prompt=' + encodeURIComponent(prompt))
+                .then(response => response.text())
+                .then(data => {
+                    document.getElementById('response').innerHTML = '<p>' + data + '</p>';
+                })
+                .catch(error => console.error('Error:', error));
+        }
+    </script>
+</body>
+</html>

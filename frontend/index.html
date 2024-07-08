@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Medihacks 2024</title>
+    <link href="index-style.css" type="text/css" rel="stylesheet">
+</head>
+<body>
+
+    <div class="heading">
+        <h1><img style="vertical-align:middle" src="logo.png"> Nine One FUN!!!!!!</h1>
+    </div>
+
+    <div class="container">
+
+        <div class="left-block">
+            <div class="sbtn">
+                <button class="btn" id="startButton">Start Voice Input</button>
+            </div>
+        </div>
+    
+        <div class="right-block">
+            <div class="transcription">
+                <p>output:</p>
+                <div id="output"></div>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        const startButton = document.getElementById('startButton');
+        const outputDiv = document.getElementById('output');
+    
+        const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition || window.mozSpeechRecognition || window.msSpeechRecognition)();
+        recognition.lang = 'en-US';
+    
+        let isRecording = false;
+    
+        recognition.onstart = () => {
+            const now = new Date();
+            const year = now.getFullYear();
+            const month = String(now.getMonth() + 1).padStart(2, '0'); // Month is zero-indexed
+            const day = String(now.getDate()).padStart(2, '0');
+            const hour = String(now.getHours()).padStart(2, '0');
+            const minute = String(now.getMinutes()).padStart(2, '0');
+            const second = String(now.getSeconds()).padStart(2, '0');
+            
+            const timestamp = `${year}/${month}/${day}/${hour}:${minute}:${second}`;
+            
+            outputDiv.innerHTML += `<p>${timestamp} > </p>`;
+            startButton.textContent = 'Stop Recording';
+            isRecording = true;
+        };
+    
+        recognition.onresult = (event) => {
+            const transcript = event.results[0][0].transcript;
+            const p = document.createElement('p');
+            p.textContent = `${outputDiv.lastChild.textContent.trim()} ${transcript}`;
+            outputDiv.lastChild.textContent = p.textContent;
+        };
+    
+        recognition.onend = () => {
+            startButton.textContent = 'Start Voice Input';
+            isRecording = false;
+        };
+    
+        startButton.addEventListener('click', () => {
+            if (isRecording) {
+                recognition.stop();
+            } else {
+                recognition.start();
+            }
+        });
+    </script>
+    
+    
+    
+</body>
+</html>
