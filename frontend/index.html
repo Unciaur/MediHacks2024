@@ -64,15 +64,21 @@
         };
 
         recognition.onend = () => {
-            startButton.textContent = 'Start Voice Input';
-            isRecording = false;
+            if (isRecording) {
+                recognition.start();
+            } else {
+                startButton.textContent = 'Start Voice Input';
+            }
         };
 
         startButton.addEventListener('click', () => {
             if (isRecording) {
                 recognition.stop();
+                isRecording = false;
             } else {
                 recognition.start();
+                isRecording = true;
+                startButton.textContent = 'Stop Recording';
             }
         });
     </script>
