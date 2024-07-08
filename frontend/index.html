@@ -47,8 +47,14 @@
                             '69bdc868a74205816a0617e7024be1fcb8ce3e95',
                         ]);
                         socket.onopen = () => {
-                            document.querySelector('#status').textContent = 'Connected';
-                            console.log('WebSocket Connected');
+                          document.querySelector('#status').textContent = 'Connected';
+                          console.log({ event: 'onopen' });
+                          mediaRecorder.addEventListener('dataavailable', async (event) => {
+                            if (event.data.size > 0 && socket.readyState === 1) {
+                              socket.send(event.data);
+                            }
+                          });
+                          mediaRecorder.start(1000);
                         };
                         socket.onmessage = (message) => {
                             const received = JSON.parse(message.data);
