@@ -23,7 +23,7 @@
           document.querySelector('#status').textContent = 'Connected'
           console.log({ event: 'onopen' })
           mediaRecorder.addEventListener('dataavailable', async (event) => {
-            if (event.data.size > 0 && socket.readyState == 1) {
+            if (event.data.size > 0 && socket.readyState === 1) {
               socket.send(event.data)
             }
           })
