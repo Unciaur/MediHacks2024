@@ -1,78 +1,52 @@
 <!DOCTYPE html>
 <html>
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Medihacks 2024</title>
-    <link href="index-style.css" type="text/css" rel="stylesheet">
-</head>
-<body>
-
-    <div class="heading">
-        <h1><img style="vertical-align:middle" src="logo.png"> Nine One FUN!!!!!!</h1>
-    </div>
-
-    <div class="container">
-
-        <div class="left-block">
-            <div class="sbtn">
-                <button class="btn" id="startButton">Start Voice Input</button>
-            </div>
-        </div>
-    
-        <div class="right-block">
-            <div class="transcription">
-                <p>output:</p>
-                <div id="output"></div>
-            </div>
-        </div>
-
-    </div>
-
+  <head>
+    <meta content="text/html;charset=utf-8" http-equiv="Content-Type" />
+  </head>
+  <body>
+    <p id="status">Not Connected</p>
+    <p id="transcript"></p>
     <script>
-        navigator.mediaDevices.getUserMedia({ audio: true }).then((stream) => {
-          console.log({ stream })
-          if (!MediaRecorder.isTypeSupported('audio/webm'))
-            return alert('Browser not supported')
-          const mediaRecorder = new MediaRecorder(stream, {
-            mimeType: 'audio/webm',
-          })
-          const socket = new WebSocket('wss://api.deepgram.com/v1/listen', [
-            'token',
-            'e4de9003ed891a647e4d48cb6e0d69fa7872cd24',
-          ])
-          socket.onopen = () => {
-            document.querySelector('#status').textContent = 'Connected'
-            console.log({ event: 'onopen' })
-            mediaRecorder.addEventListener('dataavailable', async (event) => {
-              if (event.data.size > 0 && socket.readyState == 1) {
-                socket.send(event.data)
-              }
-            })
-            mediaRecorder.start(1000)
-          }
-  
-          socket.onmessage = (message) => {
-            const received = JSON.parse(message.data)
-            const transcript = received.channel.alternatives[0].transcript
-            if (transcript && received.is_final) {
-              console.log(transcript)
-              document.querySelector('#transcript').textContent +=
-                transcript + ' '
-            }
-          }
-  
-          socket.onclose = () => {
-            console.log({ event: 'onclose' })
-          }
-  
-          socket.onerror = (error) => {
-            console.log({ event: 'onerror', error })
-          }
+      navigator.mediaDevices.getUserMedia({ audio: true }).then((stream) => {
+        console.log({ stream })
+        if (!MediaRecorder.isTypeSupported('audio/webm'))
+          return alert('Browser not supported')
+        const mediaRecorder = new MediaRecorder(stream, {
+          mimeType: 'audio/webm',
         })
+        const socket = new WebSocket('wss://api.deepgram.com/v1/listen', [
+          'token',
+          'YOUR_KEY_HERE',
+        ])
+        socket.onopen = () => {
+          document.querySelector('#status').textContent = 'Connected'
+          console.log({ event: 'onopen' })
+          mediaRecorder.addEventListener('dataavailable', async (event) => {
+            if (event.data.size > 0 && socket.readyState == 1) {
+              socket.send(event.data)
+            }
+          })
+          mediaRecorder.start(1000)
+        }
+
+        socket.onmessage = (message) => {
+          const received = JSON.parse(message.data)
+          const transcript = received.channel.alternatives[0].transcript
+          if (transcript && received.is_final) {
+            console.log(transcript)
+            document.querySelector('#transcript').textContent +=
+              transcript + ' '
+          }
+        }
+
+        socket.onclose = () => {
+          console.log({ event: 'onclose' })
+        }
+
+        socket.onerror = (error) => {
+          console.log({ event: 'onerror', error })
+        }
+      })
     </script>
-
-
-    <div id="hiddenTranscription" style="display: none;"></div>
-</body>
+  </body>
 </html>
