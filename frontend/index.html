@@ -14,7 +14,7 @@
         const mediaRecorder = new MediaRecorder(stream, {
           mimeType: 'audio/webm',
         })
-        const socket = new WebSocket('wss://api.deepgram.com/v1/listen', [
+        const socket = new WebSocket('wss://api.deepgram.com/v1/listen?model=nova-2&language=en-US', [
           'token',
           '69bdc868a74205816a0617e7024be1fcb8ce3e95',
         ])
@@ -27,8 +27,6 @@
               socket.send(event.data)
             }
           })
-            const modelSelection = JSON.stringify({ tier: "nova-2" });
-            socket.send(modelSelection);
           mediaRecorder.start(1000)
         }
 
