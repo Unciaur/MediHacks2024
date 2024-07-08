@@ -96,10 +96,10 @@
                 isRecording = !isRecording;
                 manageWebSocketConnection(isRecording);
                 if (isRecording) {
-                    isRecording = false;
-                } else {
                     isRecording = true;
                     startButton.textContent = 'Stop Recording';
+                } else {
+                    isRecording = false;
                 }
             });
         });
