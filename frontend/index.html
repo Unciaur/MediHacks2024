@@ -34,95 +34,57 @@
     </div>
 
     <script>
-      document.addEventListener('DOMContentLoaded', function() {
-        let socket = null;
-        let isConnected = false;
-
         const startButton = document.getElementById('startButton');
+        const outputDiv = document.getElementById('output');
 
-        function connectWebSocket() {
-          socket = new WebSocket('wss://api.deepgram.com/v1/listen?model=nova-2&language=en-US', [
-            'token',
-            '69bdc868a74205816a0617e7024be1fcb8ce3e95',
-          ]);
+        const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition || window.mozSpeechRecognition || window.msSpeechRecognition)();
+        recognition.lang = 'en-US';
 
-          socket.onopen = () => {
-            console.log('WebSocket Connected');
-            document.querySelector('#status').textContent = 'Connected';
-            isConnected = true;
-            startButton.textContent = 'Disconnect Voice Input';
-            navigator.mediaDevices.getUserMedia({ audio: true }).then((stream) => {
-              console.log({ stream });
-              if (!MediaRecorder.isTypeSupported('audio/webm'))
-                return alert('Browser not supported');
-              const mediaRecorder = new MediaRecorder(stream, {
-                mimeType: 'audio/webm',
-              });
+        let isRecording = false;
 
-              mediaRecorder.addEventListener('dataavailable', async (event) => {
-                if (event.data.size > 0 && socket.readyState === 1) {
-                  socket.send(event.data);
-                }
-              });
-              mediaRecorder.start(1000);
-            });
-          };
+        recognition.onstart = () => {
+            const now = new Date();
+            const year = now.getFullYear();
+            const month = String(now.getMonth() + 1).padStart(2, '0'); // Month is zero-indexed
+            const day = String(now.getDate()).padStart(2, '0');
+            const hour = String(now.getHours()).padStart(2, '0');
+            const minute = String(now.getMinutes()).padStart(2, '0');
+            const second = String(now.getSeconds()).padStart(2, '0');
 
-          socket.onmessage = (message) => {
-            const received = JSON.parse(message.data);
-            const transcript = received.channel.alternatives[0].transcript;
-            if (transcript && received.is_final) {
-              console.log(transcript);
-              document.querySelector('#transcript').textContent += transcript + ' ';
-              const encodedTranscript = encodeURIComponent(transcript);
-              const url = `https://api.letssign.xyz/chat?prompt=${encodedTranscript}`;
-              fetch(url)
-                      .then(response => {
-                        if (!response.ok) {
-                          throw new Error('Network response was not ok');
-                        }
-                        return response.text();
-                      })
-                      .then(data => {
-                        console.log(data);
-                        document.querySelector('#response').textContent = data;
-                      })
-                      .catch(error => {
-                        console.error('There was a problem with your fetch operation:', error);
-                      });
+            const timestamp = `${year}/${month}/${day}/${hour}:${minute}:${second}`;
+
+            outputDiv.innerHTML += `<p>${timestamp} > </p>`;
+            startButton.textContent = 'Stop Recording';
+            isRecording = true;
+        };
+
+        recognition.onresult = (event) => {
+            const transcript = event.results[0][0].transcript;
+            const p = document.createElement('p');
+            p.textContent = `${outputDiv.lastChild.textContent.trim()} ${transcript}`;
+            outputDiv.lastChild.textContent = p.textContent;
+            const hiddenTranscriptionDiv = document.getElementById('hiddenTranscription');
+            hiddenTranscriptionDiv.textContent += ` ${transcript}`;
+        };
+
+        recognition.onend = () => {
+            if (isRecording) {
+                recognition.start();
+            } else {
+                startButton.textContent = 'Start Voice Input';
             }
-          };
-
-          socket.onclose = () => {
-            console.log('WebSocket Disconnected');
-            document.querySelector('#status').textContent = 'Not Connected';
-            isConnected = false;
-            startButton.textContent = 'Start Voice Input';
-          };
-
-          socket.onerror = (error) => {
-            console.log('WebSocket Error', error);
-          };
-        }
-
-        function disconnectWebSocket() {
-          if (socket) {
-            socket.close();
-            socket = null;
-            document.querySelector('#status').textContent = 'Not Connected';
-            isConnected = false;
-            startButton.textContent = 'Start Voice Input';
-          }
-        }
+        };
 
         startButton.addEventListener('click', () => {
-          if (isConnected) {
-            disconnectWebSocket();
-          } else {
-            connectWebSocket();
-          }
+            if (isRecording) {
+                recognition.stop();
+                isRecording = false;
+            } else {
+                recognition.start();
+                isRecording = true;
+                startButton.textContent = 'Stop Recording';
+            }
         });
-      });
     </script>
 
 
