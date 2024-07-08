@@ -1,134 +1,134 @@
 <!DOCTYPE html>
 <html>
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Medihacks 2024</title>
-    <link href="index-style.css" type="text/css" rel="stylesheet">
-</head>
-<body>
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Medihacks 2024</title>
+        <link href="index-style.css" type="text/css" rel="stylesheet">
+    </head>
+    <body>
 
-    <div class="heading">
-        <h1><img style="vertical-align:middle" src="logo.png"> Nine One FUN!!!!!!</h1>
-    </div>
-
-    <div class="container">
-
-        <div class="left-block">
-            <div class="sbtn">
-                <button class="btn" id="startButton">Start Voice Input</button>
-            </div>
+        <div class="heading">
+            <h1><img style="vertical-align:middle" src="logo.png"> Nine One FUN!!!!!!</h1>
         </div>
 
-        <div class="right-block">
+        <div class="container">
 
-            <div class="transcription">
-                <p id="status">Not Connected</p>
-                <p id="transcript"></p>
-                <p id="response"></p>
-                <p>output:</p>
-                <div id="output"></div>
+            <div class="left-block">
+                <div class="sbtn">
+                    <button class="btn" id="startButton">Start Voice Input</button>
+                </div>
             </div>
+
+            <div class="right-block">
+
+                <div class="transcription">
+                    <p id="status">Not Connected</p>
+                    <p id="transcript"></p>
+                    <p id="response"></p>
+                    <p>output:</p>
+                    <div id="output"></div>
+                </div>
+            </div>
+
         </div>
 
-    </div>
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                const startButton = document.getElementById('startButton');
+                let socket = null;
+                let isRecording = false;
 
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            const startButton = document.getElementById('startButton');
-            let socket = null;
-            let isRecording = false;
-
-            function manageWebSocketConnection(shouldConnect) {
-                if (shouldConnect) {
-                    if (!socket || socket.readyState !== WebSocket.OPEN) {
-                        navigator.mediaDevices.getUserMedia({ audio: true }).then((stream) => {
-                            console.log({ stream });
-                            if (!MediaRecorder.isTypeSupported('audio/webm'))
-                                return alert('Browser not supported');
-                            const mediaRecorder = new MediaRecorder(stream, {
-                                mimeType: 'audio/webm',
-                            });
-                            socket = new WebSocket('wss://api.deepgram.com/v1/listen?model=nova-2&language=en-US', [
-                                'token',
-                                '69bdc868a74205816a0617e7024be1fcb8ce3e95',
-                            ]);
-                            socket.onopen = () => {
-                                document.querySelector('#status').textContent = 'Connected';
-                                console.log({ event: 'onopen' });
-                                mediaRecorder.addEventListener('dataavailable', async (event) => {
-                                    if (event.data.size > 0 && socket.readyState === WebSocket.OPEN) {
-                                        socket.send(event.data);
-                                    }
+                function manageWebSocketConnection(shouldConnect) {
+                    if (shouldConnect) {
+                        if (!socket || socket.readyState !== WebSocket.OPEN) {
+                            navigator.mediaDevices.getUserMedia({ audio: true }).then((stream) => {
+                                console.log({ stream });
+                                if (!MediaRecorder.isTypeSupported('audio/webm'))
+                                    return alert('Browser not supported');
+                                const mediaRecorder = new MediaRecorder(stream, {
+                                    mimeType: 'audio/webm',
                                 });
-                                mediaRecorder.start(1000);
-                            };
-                            socket.onmessage = (message) => {
-                                try {
-                                    const received = JSON.parse(message.data);
-                                    if (received.channel && received.channel.alternatives && received.channel.alternatives.length > 0) {
-                                        const transcript = received.channel.alternatives[0].transcript;
-                                        if (transcript && received.is_final) {
-                                            console.log(transcript);
-                                            document.querySelector('#transcript').textContent += transcript + ' ';
-                                            const encodedTranscript = encodeURIComponent(document.querySelector('#transcript').textContent);
-                                            const url = `https://api.letssign.xyz/chat?prompt=${encodedTranscript}`;
-                                            fetch(url)
-                                                .then(response => {
-                                                    if (!response.ok) {
-                                                        throw new Error('Network response was not ok');
-                                                    }
-                                                    return response.text();
-                                                })
-                                                .then(data => {
-                                                    console.log(data);
-                                                    document.querySelector('#response').textContent = data;
-                                                })
-                                                .catch(error => {
-                                                    console.error('There was a problem with your fetch operation:', error);
-                                                });
+                                socket = new WebSocket('wss://api.deepgram.com/v1/listen?model=nova-2&language=en-US', [
+                                    'token',
+                                    '69bdc868a74205816a0617e7024be1fcb8ce3e95',
+                                ]);
+                                socket.onopen = () => {
+                                    document.querySelector('#status').textContent = 'Connected';
+                                    console.log({ event: 'onopen' });
+                                    mediaRecorder.addEventListener('dataavailable', async (event) => {
+                                        if (event.data.size > 0 && socket.readyState === WebSocket.OPEN) {
+                                            socket.send(event.data);
                                         }
-                                    } else {
-                                        console.log('Received message does not contain expected data.');
+                                    });
+                                    mediaRecorder.start(1000);
+                                };
+                                socket.onmessage = (message) => {
+                                    try {
+                                        const received = JSON.parse(message.data);
+                                        if (received.channel && received.channel.alternatives && received.channel.alternatives.length > 0) {
+                                            const transcript = received.channel.alternatives[0].transcript;
+                                            if (transcript && received.is_final) {
+                                                console.log(transcript);
+                                                document.querySelector('#transcript').textContent += transcript + ' ';
+                                                const encodedTranscript = encodeURIComponent(document.querySelector('#transcript').textContent);
+                                                const url = `https://api.letssign.xyz/chat?prompt=${encodedTranscript}`;
+                                                fetch(url)
+                                                    .then(response => {
+                                                        if (!response.ok) {
+                                                            throw new Error('Network response was not ok');
+                                                        }
+                                                        return response.text();
+                                                    })
+                                                    .then(data => {
+                                                        console.log(data);
+                                                        document.querySelector('#response').textContent = data;
+                                                    })
+                                                    .catch(error => {
+                                                        console.error('There was a problem with your fetch operation:', error);
+                                                    });
+                                            }
+                                        } else {
+                                            console.log('Received message does not contain expected data.');
+                                        }
+                                    } catch (error) {
+                                        console.error('Error processing message:', error);
                                     }
-                                } catch (error) {
-                                    console.error('Error processing message:', error);
-                                }
-                            };
-                            socket.onclose = () => {
-                                mediaRecorder.stop();
-                                console.log('WebSocket Disconnected');
-                                document.querySelector('#status').textContent = 'Not Connected';
-                            };
-                            socket.onerror = (error) => {
-                                console.error('WebSocket Error:', error);
-                            };
-                        }).catch(error => {
-                            console.error('Error getting user media:', error);
-                        });
-                    }
-                } else {
-                    if (socket && socket.readyState === WebSocket.OPEN) {
-                        socket.close();
-                        socket = null;
-                        document.querySelector('#status').textContent = 'Not Connected';
-                        console.log('WebSocket Disconnected');
+                                };
+                                socket.onclose = () => {
+                                    mediaRecorder.stop();
+                                    console.log('WebSocket Disconnected');
+                                    document.querySelector('#status').textContent = 'Not Connected';
+                                };
+                                socket.onerror = (error) => {
+                                    console.error('WebSocket Error:', error);
+                                };
+                            }).catch(error => {
+                                console.error('Error getting user media:', error);
+                            });
+                        }
+                    } else {
+                        if (socket && socket.readyState === WebSocket.OPEN) {
+                            socket.close();
+                            socket = null;
+                            document.querySelector('#status').textContent = 'Not Connected';
+                            console.log('WebSocket Disconnected');
+                        }
                     }
                 }
-            }
 
-            startButton.addEventListener('click', () => {
-                isRecording = !isRecording;
-                manageWebSocketConnection(isRecording);
-                if (isRecording) {
-                    startButton.textContent = 'Stop Recording';
-                } else {
-                    startButton.textContent = 'Start Recording';
-                }
+                startButton.addEventListener('click', () => {
+                    isRecording = !isRecording;
+                    manageWebSocketConnection(isRecording);
+                    if (isRecording) {
+                        startButton.textContent = 'Stop Recording';
+                    } else {
+                        startButton.textContent = 'Start Recording';
+                    }
+                });
             });
-        });
-    </script>
+        </script>
 
-    <div id="hiddenTranscription" style="display: none;"></div>
-</body>
+        <div id="hiddenTranscription" style="display: none;"></div>
+    </body>
 </html>
