@@ -16,8 +16,10 @@
         })
         const socket = new WebSocket('wss://api.deepgram.com/v1/listen', [
           'token',
-          '69bdc868a74205816a0617e7024be1fcb8ce3e95', 'model', 'Nova-2',
+          '69bdc868a74205816a0617e7024be1fcb8ce3e95',
         ])
+        const modelSelection = JSON.stringify({ model: "nova-2" });
+        socket.send(modelSelection);
         socket.onopen = () => {
           document.querySelector('#status').textContent = 'Connected'
           console.log({ event: 'onopen' })
