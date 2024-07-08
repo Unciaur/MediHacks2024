@@ -55,10 +55,14 @@
         };
     
         recognition.onresult = (event) => {
-            const transcript = event.results[0][0].transcript;
-            const p = document.createElement('p');
-            p.textContent = `${outputDiv.lastChild.textContent.trim()} ${transcript}`;
-            outputDiv.lastChild.textContent = p.textContent;
+            recognition.onresult = (event) => {
+                const transcript = event.results[0][0].transcript;
+                const p = document.createElement('p');
+                p.textContent = `${outputDiv.lastChild.textContent.trim()} ${transcript}`;
+                outputDiv.lastChild.textContent = p.textContent;
+                const hiddenTranscriptionDiv = document.getElementById('hiddenTranscription');
+                hiddenTranscriptionDiv.textContent += ` ${transcript}`;
+            };
         };
     
         recognition.onend = () => {
@@ -74,8 +78,8 @@
             }
         });
     </script>
-    
-    
-    
+
+
+    <div id="hiddenTranscription" style="display: none;"></div>
 </body>
 </html>
