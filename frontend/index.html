@@ -1,41 +1,92 @@
 <!DOCTYPE html>
-<html>
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Medihacks 2024</title>
-    <link href="index-style.css" type="text/css" rel="stylesheet">
-</head>
-<body>
+    <html>
+        <head>
+            <meta charset="UTF-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <title>Medihacks 2024</title>
+            <link href="index-style.css" type="text/css" rel="stylesheet">
+        </head>
+        <body>
+        <style>
+            body{
+                margin: 0;
+                padding: 0;
+            }
+            header{
+                text-align: center;
+                color: white;
+                margin: auto;
+                padding: 0;
+                width: 50%;
+                background: black;
 
-    <div class="heading">
-        <h1><img style="vertical-align:middle" src="logo.png"> Nine One FUN!!!!!!</h1>
-    </div>
+            }
 
-    <div class="container">
+            body{
+                background: rgb(143, 143, 143)
+            }
 
-        <div class="left-block">
-            <div class="sbtn">
-                <button class="btn" id="startButton">Start Voice Input</button>
-            </div>
-        </div>
+            .right-block {
+                margin: auto;
+                padding: 10px;
+                color: white;
+                display: flex;
+                text-align: left;
+                flex-direction: row;
+            }
+            .transcription{
+                margin-left: auto;
+                margin-right: auto;
+                width: 45%;
+                height: auto;
+                background: black;
+                padding: 10px;
+            }
+            .extrapolation{
+                margin-left: auto;
+                margin-right: auto;
+                width: 45%;
+                height: auto;
+                background: black;
+                padding: 10px;
+            }
+            button{
+                margin:auto;
+                display:block;
+                background:none;
+                border:none;
+            }
+            img{
+                margin:auto;
+                width: 200px;
+                border: none;
+                background: none;
+            }
+        </style>
+
+        <header>
+            <h1>Nine One FUN!!!!!!</h1>
+        </header>
+
+
+        <button class="btn" id="startButton"> <img src="images/buttonopen.png" alt="red button" id="redbutton">
+        </button>
+
 
         <div class="right-block">
-
             <div class="transcription">
-                <p id="status">Not Connected</p>
-                <p id="transcript"></p>
-                <p id="response"></p>
-                <p>output:</p>
+                Output:
                 <div id="output"></div>
             </div>
+            <div class="extrapolation">
+                Extrapolation:
+            </div>
         </div>
-
-    </div>
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             const startButton = document.getElementById('startButton');
+            const image = document.getElementById('redbutton')
             let socket = null;
             let isRecording = false;
 
@@ -123,7 +174,7 @@
                 if (isRecording) {
                     startButton.textContent = 'Stop Recording';
                 } else {
-                    startButton.textContent = 'Start Recording';
+                    image.src = "images/buttonopen.png";
                 }
             });
         });
