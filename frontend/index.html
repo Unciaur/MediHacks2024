@@ -49,7 +49,7 @@
                                 const mediaRecorder = new MediaRecorder(stream, {
                                     mimeType: 'audio/webm',
                                 });
-                                socket = new WebSocket('wss://api.deepgram.com/v1/listen?model=nova-2&language=en-US', [
+                                socket = new WebSocket('wss://api.deepgram.com/v1/listen?model=nova-2-general&language=en-US', [
                                     'token',
                                     '69bdc868a74205816a0617e7024be1fcb8ce3e95',
                                 ]);
