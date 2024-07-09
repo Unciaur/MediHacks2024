@@ -45,6 +45,7 @@
                 let socket = null;
                 let isRecording = false;
                 let responseToggle = true;
+                let apiCounter = 0;
 
                 function manageWebSocketConnection(shouldConnect) {
                     if (shouldConnect) {
@@ -97,23 +98,36 @@
                                                 const url = `https://api.letssign.xyz/chat?prompt=${encodedTranscript}`;
 
                                                 if (responseToggle) {
-                                                    fetch(url)
-                                                        .then(response => {
-                                                            if (!response.ok) {
-                                                                throw new Error('Network response was not ok');
-                                                            }
-                                                            return response.text();
-                                                        })
-                                                        .then(data => {
-                                                            console.log(data);
-                                                            document.querySelector('#response').textContent = data;
-
-                                                            // Store response in localStorage
-                                                            localStorage.setItem('response', document.querySelector('#response').textContent);
-                                                        })
-                                                        .catch(error => {
-                                                            console.error('There was a problem with your fetch operation:', error);
-                                                        });
+                                                    fetchWithRateLimit(url);
+                                                    function fetchWithRateLimit(url) {
+                                                        if (apiCounter <= 10) {
+                                                            // Fetch immediately for the first 5 requests
+                                                            fetchAPI(url);
+                                                        } else {
+                                                            // Introduce a delay of 1-2 seconds for subsequent requests
+                                                            const delay = 1000 + Math.random() * 1000; // Random delay between 1 and 2 seconds
+                                                            setTimeout(() => fetchAPI(url), delay);
+                                                        }
+                                                    }
+                                                    function fetchAPI(url) {
+                                                        fetch(url)
+                                                            .then(response => {
+                                                                if (!response.ok) {
+                                                                    throw new Error('Network response was not ok');
+                                                                }
+                                                                return response.text();
+                                                            })
+                                                            .then(data => {
+                                                                console.log(data);
+                                                                document.querySelector('#response').textContent = data;
+                                                                // Store response in localStorage
+                                                                localStorage.setItem('response', document.querySelector('#response').textContent);
+                                                                apiCounter++;
+                                                            })
+                                                            .catch(error => {
+                                                                console.error('There was a problem with your fetch operation:', error);
+                                                            });
+                                                    }
                                                 }
                                             }
                                         } else {
@@ -166,6 +180,7 @@
                     document.querySelector('#transcript').innerHTML = ''; // Clear transcript display
                     document.querySelector('#response').textContent = ''; // Clear response display
                     // Add additional clearing as needed, such as outputDiv.innerHTML = '';
+                    apiCounter = 0;
                 });
 
                 toggleResponseButton.addEventListener('click', () => {
