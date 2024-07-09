@@ -1,13 +1,11 @@
 package com.medihacks2024.dispatcher_copilot.controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.medihacks2024.dispatcher_copilot.limiter.RateLimiter;
 import com.medihacks2024.dispatcher_copilot.service.MessageService;
 import com.medihacks2024.dispatcher_copilot.templates.*;
-import org.springframework.ai.openai.api.OpenAiApi;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
@@ -54,7 +52,7 @@ public class ChatController {
         ChatRequest request = new ChatRequest();
         request.setModel("Qwen/Qwen2-7B-Instruct");
         List<Message> messages = new ArrayList<>();
-        messages.add(new Message("system", "Extrapolate the name, address (or location if uncertain), reason for the call, emergency status, and emergency department requested from the user's prompt. Emergency status can be expressed in either emergency or non-emergency. Emergency departments can be police, EMS, and/or fire. Do not include any other information."));
+        messages.add(new Message("system", "Extrapolate the name, address (or location if uncertain), reason for the call, emergency status, and emergency department requested from the user's prompt. Emergency status can be expressed in either emergency or non-emergency. Emergency departments can be police, EMS, and/or fire. Check for the latest information in the prompt and respond accordingly. Do not include any other information."));
         messages.add(new Message("user", prompt));
         request.setMessages(messages);
         request.setMinTokens(5);

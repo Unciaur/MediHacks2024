@@ -1,6 +1,5 @@
 package com.medihacks2024.dispatcher_copilot.limiter;
 
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 import java.util.concurrent.Semaphore;
