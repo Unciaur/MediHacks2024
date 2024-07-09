@@ -71,10 +71,20 @@
                                             const transcript = received.channel.alternatives[0].transcript;
                                             if (transcript && received.is_final) {
                                                 console.log(transcript);
-                                                document.querySelector('#transcript').textContent += transcript + ' ';
+
+                                                const now = new Date();
+                                                const year = now.getFullYear();
+                                                const month = String(now.getMonth() + 1).padStart(2, '0'); // Month is zero-indexed
+                                                const day = String(now.getDate()).padStart(2, '0');
+                                                const hour = String(now.getHours()).padStart(2, '0');
+                                                const minute = String(now.getMinutes()).padStart(2, '0');
+                                                const second = String(now.getSeconds()).padStart(2, '0');
+                                                const timestamp = `${year}/${month}/${day}/${hour}:${minute}:${second}`;
+                                                
+                                                document.querySelector('#transcript').innerHTML += timestamp + '> ' + transcript + '<br>';
                                             
                                                 // Store transcript in localStorage
-                                                localStorage.setItem('transcript', document.querySelector('#transcript').textContent);
+                                                localStorage.setItem('transcript', document.querySelector('#transcript').innerHTML);
                                                 localStorage.setItem('response', document.querySelector('#response').textContent);
                                             
                                                 const encodedTranscript = encodeURIComponent(document.querySelector('#transcript').textContent);
@@ -128,6 +138,8 @@
                     manageWebSocketConnection(isRecording);
                     if (isRecording) {
                         startButton.textContent = 'Stop Recording';
+                        startButton.style.backgroundColor = '#b00b69';
+                        startButton.style.color = '#420420';
                         
                     } else {
                         startButton.textContent = 'Start Recording';
@@ -139,7 +151,7 @@
                 clearStorageButton.addEventListener('click', () => {
                 localStorage.removeItem('transcript');
                 localStorage.removeItem('response');
-                document.querySelector('#transcript').textContent = ''; // Clear transcript display
+                document.querySelector('#transcript').innerHTML = ''; // Clear transcript display
                 document.querySelector('#response').textContent = ''; // Clear response display
                 // Add additional clearing as needed, such as outputDiv.innerHTML = '';
                 });
@@ -148,7 +160,7 @@
                 // Load stored transcript on page load
                 const storedTranscript = localStorage.getItem('transcript');
                 if (storedTranscript) {
-                    document.querySelector('#transcript').textContent = storedTranscript;
+                    document.querySelector('#transcript').innerHTML = storedTranscript;
                 }
                 const storedResponse = localStorage.getItem('response');
                 if (storedTranscript) {
