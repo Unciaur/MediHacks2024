@@ -54,11 +54,11 @@ public class ChatController {
         ChatRequest request = new ChatRequest();
         request.setModel("Qwen/Qwen2-7B-Instruct");
         List<Message> messages = new ArrayList<>();
-        messages.add(new Message("system", "Extrapolate the name, address (or location if uncertain), and reason for call from the user's prompt."));
+        messages.add(new Message("system", "Extrapolate the name, address (or location if uncertain), reason for the call, emergency status, and emergency department requested from the user's prompt. Emergency status can be expressed in either emergency or non-emergency. Emergency departments can be police, EMS, and/or fire. Only use Name, Address, Reason for the call, Emergency status, and Emergency department requested as fields for the response. Do not include any other information."));
         messages.add(new Message("user", prompt));
         request.setMessages(messages);
         request.setMinTokens(5);
-        request.setMaxTokens(50);
+        request.setMaxTokens(80);
 
         // call the API in a separate thread
         CompletableFuture.supplyAsync(() -> {
