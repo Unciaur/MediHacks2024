@@ -101,10 +101,10 @@
                                                     fetchWithRateLimit(url);
                                                     function fetchWithRateLimit(url) {
                                                         if (apiCounter <= 10) {
-                                                            // Fetch immediately for the first 5 requests
+                                                            // Fetch immediately for the first 10 requests
                                                             fetchAPI(url);
                                                         } else {
-                                                            const delay = 1000;
+                                                            const delay = 2000;
                                                             setTimeout(() => fetchAPI(url), delay);
                                                         }
                                                     }
