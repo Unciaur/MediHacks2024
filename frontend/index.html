@@ -22,8 +22,9 @@
             </div>
 
             <div class="right-block">
-
+                <button id="exportTranscriptButton">Export Transcript</button>
                 <div class="transcription">
+
                     <p id="status">Not Connected</p>
                     <p id="transcript"></p>
                     <p id="response"></p>
@@ -83,6 +84,7 @@
                                                 const timestamp = `${year}/${month}/${day}/${hour}:${minute}:${second}`;
                                                 
                                                 document.querySelector('#transcript').innerHTML += timestamp + '> ' + transcript + '<br>';
+                                                document.querySelector('#hiddenTranscription').textContent = document.querySelector('#transcript').textContent;
 
                                                 // Store transcript in localStorage
                                                 localStorage.setItem('transcript', document.querySelector('#transcript').innerHTML);
@@ -169,9 +171,26 @@
                 if (storedTranscript) {
                     document.querySelector('#response').textContent = storedResponse;
                 }
+                const exportTranscriptButton = document.getElementById('exportTranscriptButton');
+
+                exportTranscriptButton.addEventListener('click', function() {
+                    const transcript = localStorage.getItem('transcript');
+
+                    const blob = new Blob([transcript], { type: 'text/plain' });
+                    const url = URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.href = url;
+                    a.download = 'transcript.txt';
+                    document.body.appendChild(a);
+
+                    document.body.removeChild(a);
+                    URL.revokeObjectURL(url);
+                });
             });
         </script>
 
-        <div id="hiddenTranscription" style="display: none;"></div>
+        <div id="hiddenTranscription" style="display: none;">
+            <p id="hiddenTranscript"></p>
+        </div>
     </body>
 </html>
