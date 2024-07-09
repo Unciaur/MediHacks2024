@@ -1,16 +1,17 @@
 <!DOCTYPE html>
-<html lang="en">
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <meta name="description" content="MediHacks 2024 Submission to Laerdal Option 2, Emergency Dispatch Conversational AI">
-        <title>Medihacks 2024</title>
-        <link href="index-style.css" type="text/css" rel="stylesheet">
-    </head>
+    <html lang="en">
+        <head>
+            <meta charset="UTF-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <meta name="description" content="MediHacks 2024 Submission to Laerdal Option 2, Emergency Dispatch Conversational AI">
+            <title>Medihacks 2024</title>
+            <link href="index-style.css" type="text/css" rel="stylesheet">
+        </head>
     <body>
 
         <div class="heading">
             <h1><img style="vertical-align:middle" src="logo.png" alt="Nine One Fun Logo"> Nine One FUN!!!!!!</h1>
+            <button class = "github" onclick="window.open('https://github.com/Unciaur/MediHacks2024')"> <img src="github_logo.png" alt="github logo" id="github-logo" width="40" height="40">  </button>
         </div>
 
         <div class="container">
@@ -21,18 +22,19 @@
                 </div>
                 <button class="csbtn" id="clearStorageButton">Clear Storage</button>
                 <button class="trbtn" id="toggleResponseButton">Toggle Response</button>
+                <button class="etbtn" id="exportTranscriptButton">Export Transcript</button>
             </div>
 
             <div class="right-block">
-                <button id="exportTranscriptButton">Export Transcript</button>
-                <div class="transcription">
 
-                    <p id="status">Not Connected</p>
+                <div class="transcription">
+                    <p>Transcription:</p>
                     <p id="transcript"></p>
-                    <p id="response"></p>
-                    <p>output:</p>
-                    <div id="output"></div>
                 </div>
+                <div class="output" id="output"><p>Output:</p>
+                    <p id="response"></p>
+                </div>
+                <div class = "status" id="status">Not Connected</div>
             </div>
 
         </div>
