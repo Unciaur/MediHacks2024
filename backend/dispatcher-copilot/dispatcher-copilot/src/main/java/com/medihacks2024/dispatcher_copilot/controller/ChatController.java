@@ -54,7 +54,7 @@ public class ChatController {
         ChatRequest request = new ChatRequest();
         request.setModel("Qwen/Qwen2-7B-Instruct");
         List<Message> messages = new ArrayList<>();
-        messages.add(new Message("system", "Extrapolate the name, address (or location if uncertain), and reason for call from the user's prompt. Use the name, address, and reason that has the highest repetition rate."));
+        messages.add(new Message("system", "Extrapolate the name, address (or location if uncertain), and reason for call from the user's prompt."));
         messages.add(new Message("user", prompt));
         request.setMessages(messages);
         request.setMinTokens(5);
