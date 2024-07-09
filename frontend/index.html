@@ -18,6 +18,7 @@
                 <div class="sbtn">
                     <button class="btn" id="startButton">Start Voice Input</button>
                 </div>
+                <button class="csbtn" id="clearStorageButton">Clear Storage</button>
             </div>
 
             <div class="right-block">
@@ -71,6 +72,11 @@
                                             if (transcript && received.is_final) {
                                                 console.log(transcript);
                                                 document.querySelector('#transcript').textContent += transcript + ' ';
+                                            
+                                                // Store transcript in localStorage
+                                                localStorage.setItem('transcript', document.querySelector('#transcript').textContent);
+                                                localStorage.setItem('response', document.querySelector('#response').textContent);
+                                            
                                                 const encodedTranscript = encodeURIComponent(document.querySelector('#transcript').textContent);
                                                 const url = `https://api.letssign.xyz/chat?prompt=${encodedTranscript}`;
                                                 fetch(url)
@@ -122,10 +128,32 @@
                     manageWebSocketConnection(isRecording);
                     if (isRecording) {
                         startButton.textContent = 'Stop Recording';
+                        
                     } else {
                         startButton.textContent = 'Start Recording';
+                        startButton.style.backgroundColor = '#555777';
+                        startButton.style.color = '#f5f5f5';
                     }
                 });
+
+                clearStorageButton.addEventListener('click', () => {
+                localStorage.removeItem('transcript');
+                localStorage.removeItem('response');
+                document.querySelector('#transcript').textContent = ''; // Clear transcript display
+                document.querySelector('#response').textContent = ''; // Clear response display
+                // Add additional clearing as needed, such as outputDiv.innerHTML = '';
+                });
+
+
+                // Load stored transcript on page load
+                const storedTranscript = localStorage.getItem('transcript');
+                if (storedTranscript) {
+                    document.querySelector('#transcript').textContent = storedTranscript;
+                }
+                const storedResponse = localStorage.getItem('response');
+                if (storedTranscript) {
+                    document.querySelector('#response').textContent = storedResponse;
+                }
             });
         </script>
 

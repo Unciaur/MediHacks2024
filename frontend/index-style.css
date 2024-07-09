@@ -41,27 +41,90 @@ h2 {
     transform: translate(-50%, -20%);
 }
 
+.csbtn {
+    display: block;
+    cursor: pointer;
+    /*width: 100px;
+    height: 20px;*/
+    border: 2px solid #f5f5f5;
+    padding: 2px 10px;
+    color: #f5f5f5;
+    text-align: center;
+    text-decoration: none;
+    background: #555777;
+    box-shadow: 0 0 3px gray;
+    font-size: 15px;
+    font-family: "Comic Sans MS", "Comic Sans", sans-serif;
+
+    position: absolute;
+    top: 80%;
+    left: 50%; 
+    transform: translate(-50%, -80%);
+}
+
+.csbtn::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.2);
+    transition: opacity 0.3s ease;
+    opacity: 0;
+    pointer-events: none;
+}
+
+.csbtn:hover::before {
+    opacity: 1;
+}
+
+.csbtn span {
+    position: relative;
+    z-index: 1;
+}
+
 .transcription {
     font-family: "Comic Sans MS", "Comic Sans", sans-serif;
 }
 
 .btn {
     display: block;
+    cursor: pointer;
     width: 250px;
     height: 250px;
     line-height: 80px;
-    border: 2px solid #f5f5f5;
+    border: 4px solid #f5f5f5;
     border-radius: 50%;
     color: #f5f5f5;
     text-align: center;
     text-decoration: none;
     background: #555777;
-    box-shadow: 0 0 3px gray;
+    box-shadow: 0 0 5px gray;
     font-size: 20px;
     font-weight: bold;
+    font-family: "Comic Sans MS", "Comic Sans", sans-serif;
 }
 
-.btn:hover {
-    background-color:#b00b69;
-    color: #420420;
+.btn::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    background-color: rgba(0, 0, 0, 0.15);
+    transition: opacity 0.3s ease;
+    opacity: 0;
+    pointer-events: none;
+}
+
+.btn:hover::before {
+    opacity: 1;
+}
+
+.btn span {
+    position: relative;
+    z-index: 1;
 }
