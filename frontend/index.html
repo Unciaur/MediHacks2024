@@ -35,6 +35,9 @@
         </div>
 
         <script>
+            const dotenv = require("dotenv");
+            dotenv.config();
+
             document.addEventListener('DOMContentLoaded', function() {
                 const startButton = document.getElementById('startButton');
                 const clearStorageButton = document.getElementById('clearStorageButton');
@@ -53,7 +56,7 @@
                                 });
                                 socket = new WebSocket('wss://api.deepgram.com/v1/listen?model=nova-2-general&language=en-US', [
                                     'token',
-                                    '69bdc868a74205816a0617e7024be1fcb8ce3e95',
+                                    process.env.DEEPGRAM_API_KEY,
                                 ]);
                                 socket.onopen = () => {
                                     document.querySelector('#status').textContent = 'Connected';
