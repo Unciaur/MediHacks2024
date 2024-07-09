@@ -83,10 +83,9 @@
                                                 const timestamp = `${year}/${month}/${day}/${hour}:${minute}:${second}`;
                                                 
                                                 document.querySelector('#transcript').innerHTML += timestamp + '> ' + transcript + '<br>';
-                                            
+
                                                 // Store transcript in localStorage
                                                 localStorage.setItem('transcript', document.querySelector('#transcript').innerHTML);
-                                                localStorage.setItem('response', document.querySelector('#response').textContent);
                                             
                                                 const encodedTranscript = encodeURIComponent(document.querySelector('#transcript').textContent);
                                                 const url = `https://api.letssign.xyz/chat?prompt=${encodedTranscript}`;
@@ -100,6 +99,9 @@
                                                     .then(data => {
                                                         console.log(data);
                                                         document.querySelector('#response').textContent = data;
+
+                                                        // Store response in localStorage
+                                                        localStorage.setItem('response', document.querySelector('#response').textContent);
                                                     })
                                                     .catch(error => {
                                                         console.error('There was a problem with your fetch operation:', error);
