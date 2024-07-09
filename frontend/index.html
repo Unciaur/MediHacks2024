@@ -174,7 +174,9 @@
                 const exportTranscriptButton = document.getElementById('exportTranscriptButton');
 
                 exportTranscriptButton.addEventListener('click', function() {
-                    const transcript = localStorage.getItem('transcript');
+                    let transcript = localStorage.getItem('transcript');
+
+                    transcript = transcript.replace(/<br\s*\/?>/gi, '\n');
 
                     const blob = new Blob([transcript], { type: 'text/plain' });
                     const url = URL.createObjectURL(blob);
