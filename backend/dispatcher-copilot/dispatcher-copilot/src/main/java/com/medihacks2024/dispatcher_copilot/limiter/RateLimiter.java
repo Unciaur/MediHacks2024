@@ -8,14 +8,15 @@ import java.util.concurrent.Semaphore;
 @Component
 public class RateLimiter {
 
-    private final Semaphore semaphore = new Semaphore(1);
+    private final Semaphore semaphore = new Semaphore(1, true);
 
     public boolean tryAcquire() {
         return semaphore.tryAcquire();
     }
 
-    @Scheduled(fixedRate = 500)
     public void releasePermit() {
-        semaphore.release();
+        if (semaphore.availablePermits() == 0) {
+            semaphore.release();
+        }
     }
 }

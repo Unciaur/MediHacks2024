@@ -49,10 +49,6 @@ public class ChatController {
     @GetMapping("/chat")
     public DeferredResult<ResponseEntity<?>> chat(@RequestParam String prompt) {
         DeferredResult<ResponseEntity<?>> output = new DeferredResult<>();
-        if (!rateLimiter.tryAcquire()) {
-            output.setErrorResult(ResponseEntity.status(HttpStatus.TOO_MANY_REQUESTS).body("Rate limit exceeded. Try again later."));
-            return output;
-        }
 
         // create a request
         ChatRequest request = new ChatRequest();
