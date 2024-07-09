@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.medihacks2024.dispatcher_copilot.limiter.RateLimiter;
 import com.medihacks2024.dispatcher_copilot.service.MessageService;
 import com.medihacks2024.dispatcher_copilot.templates.*;
 import org.springframework.ai.openai.api.OpenAiApi;
@@ -33,6 +34,9 @@ public class ChatController {
     private RestTemplate restTemplate;
 
     @Autowired
+    private RateLimiter rateLimiter;
+
+    @Autowired
     private MessageService messageService;
 
     @Value("${openai.model}")
@@ -45,6 +49,10 @@ public class ChatController {
     @GetMapping("/chat")
     public DeferredResult<ResponseEntity<?>> chat(@RequestParam String prompt) {
         DeferredResult<ResponseEntity<?>> output = new DeferredResult<>();
+        if (!rateLimiter.tryAcquire()) {
+            output.setErrorResult(ResponseEntity.status(HttpStatus.TOO_MANY_REQUESTS).body("Rate limit exceeded. Try again later."));
+            return output;
+        }
 
         // create a request
         ChatRequest request = new ChatRequest();

@@ -1,0 +1,23 @@
+{
+  "name": "medihacks2024",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Unciaur/MediHacks2024.git"
+  },
+  "author": "",
+  "license": "AGPL-3.0",
+  "bugs": {
+    "url": "https://github.com/Unciaur/MediHacks2024/issues"
+  },
+  "homepage": "https://github.com/Unciaur/MediHacks2024#readme",
+  "dependencies": {
+    "@deepgram/sdk": "^3.4.1",
+    "cross-fetch": "^4.0.0"
+  }
+}
