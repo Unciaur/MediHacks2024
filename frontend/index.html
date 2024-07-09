@@ -175,14 +175,26 @@
 
                 exportTranscriptButton.addEventListener('click', function() {
                     let transcript = localStorage.getItem('transcript');
+                    let response = localStorage.getItem('response');
 
-                    transcript = transcript.replace(/<br\s*\/?>/gi, '\n');
+                    if (!transcript) {
+                        transcript = '';
+                    }
 
-                    const blob = new Blob([transcript], { type: 'text/plain' });
+                    if (!response) {
+                        response = '';
+                    }
+
+                    const combinedContent = transcript + '\n\nResponse:\n' + response;
+
+                    const formattedContent = combinedContent.replace(/&gt;/g, '>')
+                        .replace(/<br\s*\/?>/gi, '\n');
+
+                    const blob = new Blob([formattedContent], { type: 'text/plain' });
                     const url = URL.createObjectURL(blob);
                     const a = document.createElement('a');
                     a.href = url;
-                    a.download = 'transcript.txt';
+                    a.download = 'transcript_and_response.txt';
                     document.body.appendChild(a);
                     a.click();
 
