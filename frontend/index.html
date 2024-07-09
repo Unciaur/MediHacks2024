@@ -20,6 +20,7 @@
                     <button class="btn" id="startButton">Start Voice Input</button>
                 </div>
                 <button class="csbtn" id="clearStorageButton">Clear Storage</button>
+                <button class="csbtn" id="toggleResponseButton">Toggle Response</button>
             </div>
 
             <div class="right-block">
@@ -40,8 +41,10 @@
             document.addEventListener('DOMContentLoaded', function() {
                 const startButton = document.getElementById('startButton');
                 const clearStorageButton = document.getElementById('clearStorageButton');
+                const toggleResponseButton = document.getElementById('toggleResponseButton');
                 let socket = null;
                 let isRecording = false;
+                let responseToggle = true;
 
                 function manageWebSocketConnection(shouldConnect) {
                     if (shouldConnect) {
@@ -92,23 +95,26 @@
                                             
                                                 const encodedTranscript = encodeURIComponent(document.querySelector('#transcript').textContent);
                                                 const url = `https://api.letssign.xyz/chat?prompt=${encodedTranscript}`;
-                                                fetch(url)
-                                                    .then(response => {
-                                                        if (!response.ok) {
-                                                            throw new Error('Network response was not ok');
-                                                        }
-                                                        return response.text();
-                                                    })
-                                                    .then(data => {
-                                                        console.log(data);
-                                                        document.querySelector('#response').textContent = data;
 
-                                                        // Store response in localStorage
-                                                        localStorage.setItem('response', document.querySelector('#response').textContent);
-                                                    })
-                                                    .catch(error => {
-                                                        console.error('There was a problem with your fetch operation:', error);
-                                                    });
+                                                if (responseToggle) {
+                                                    fetch(url)
+                                                        .then(response => {
+                                                            if (!response.ok) {
+                                                                throw new Error('Network response was not ok');
+                                                            }
+                                                            return response.text();
+                                                        })
+                                                        .then(data => {
+                                                            console.log(data);
+                                                            document.querySelector('#response').textContent = data;
+
+                                                            // Store response in localStorage
+                                                            localStorage.setItem('response', document.querySelector('#response').textContent);
+                                                        })
+                                                        .catch(error => {
+                                                            console.error('There was a problem with your fetch operation:', error);
+                                                        });
+                                                }
                                             }
                                         } else {
                                             console.log('Received message does not contain expected data.');
@@ -155,11 +161,24 @@
                 });
 
                 clearStorageButton.addEventListener('click', () => {
-                localStorage.removeItem('transcript');
-                localStorage.removeItem('response');
-                document.querySelector('#transcript').innerHTML = ''; // Clear transcript display
-                document.querySelector('#response').textContent = ''; // Clear response display
-                // Add additional clearing as needed, such as outputDiv.innerHTML = '';
+                    localStorage.removeItem('transcript');
+                    localStorage.removeItem('response');
+                    document.querySelector('#transcript').innerHTML = ''; // Clear transcript display
+                    document.querySelector('#response').textContent = ''; // Clear response display
+                    // Add additional clearing as needed, such as outputDiv.innerHTML = '';
+                });
+
+                toggleResponseButton.addEventListener('click', () => {
+                    responseToggle = !responseToggle;
+                    if (responseToggle) {
+                        toggleResponseButton.textContent = 'Response On';
+                        toggleResponseButton.style.backgroundColor = '#b00b69';
+                        toggleResponseButton.style.color = '#420420';
+                    } else {
+                        toggleResponseButton.textContent = 'Response Off';
+                        toggleResponseButton.style.backgroundColor = '#555777';
+                        toggleResponseButton.style.color = '#f5f5f5';
+                    }
                 });
 
 
