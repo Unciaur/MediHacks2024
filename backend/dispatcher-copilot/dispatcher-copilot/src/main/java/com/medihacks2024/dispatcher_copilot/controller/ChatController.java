@@ -47,8 +47,6 @@ public class ChatController {
     @Value("${openai.api.url}")
     private String apiUrl;
 
-    private static final Logger logger = LoggerFactory.getLogger(ChatController.class);
-
     @CrossOrigin(origins = "https://medi.letssign.xyz/")
     @GetMapping("/chat")
     public DeferredResult<ResponseEntity<?>> chat(@RequestParam String prompt) {
@@ -95,7 +93,7 @@ public class ChatController {
     @CrossOrigin(origins = "https://medi.letssign.xyz/")
     @GetMapping("/receiveTranscript")
     public void receiveTranscript(@RequestParam String transcript) {
-
+        //Receive transcript from frontend.
     }
 
     private String translateHexadecimalToString(String hexString) {

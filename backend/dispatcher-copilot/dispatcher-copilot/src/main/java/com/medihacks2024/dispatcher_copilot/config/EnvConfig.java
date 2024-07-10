@@ -6,9 +6,11 @@ import org.springframework.context.annotation.Configuration;
 
 @Configuration
 public class EnvConfig {
+    //Load the .env file
 
     @Bean
     public Dotenv dotenv() {
+        //Load .env file from the root directory
         return Dotenv.configure()
                 .directory("D:/CodingProjects/MediHacks2024/")
                 .load();
