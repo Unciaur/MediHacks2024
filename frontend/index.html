@@ -218,8 +218,9 @@
                 }
                 const storedResponse = localStorage.getItem('response');
                 if (storedTranscript) {
-                    document.querySelector('#response').textContent = storedResponse;
+                    document.querySelector('#response').innerHTML = formatResponse(storedResponse);
                 }
+
                 const exportTranscriptButton = document.getElementById('exportTranscriptButton');
 
                 exportTranscriptButton.addEventListener('click', function() {
