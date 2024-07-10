@@ -19,17 +19,17 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.context.request.async.DeferredResult;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import io.github.cdimascio.dotenv.Dotenv;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
+/**
+ * This controller is used to facilitate the connection between the frontend, backend, and LLM.
+ */
 @RestController
 public class ChatController {
+    //Main logic for frontend -> backend -> LLM -> backend -> frontend
 
     @Qualifier("openaiRestTemplate")
     @Autowired
