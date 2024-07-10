@@ -55,6 +55,7 @@
                 let socket = null;
                 let isRecording = false;
                 let responseToggle = true;
+                let apiCounter = 0;
 
                 function formatResponse(responseText) {
                     // Define patterns to insert line breaks before
@@ -125,23 +126,37 @@
                                                 const url = `https://api.letssign.xyz/chat?prompt=${encodedTranscript}`;
 
                                                 if (responseToggle) {
-                                                    fetch(url)
-                                                        .then(response => {
-                                                            if (!response.ok) {
-                                                                throw new Error('Network response was not ok');
-                                                            }
-                                                            return response.text();
-                                                        })
-                                                        .then(data => {
-                                                            console.log(data);
-                                                            document.querySelector('#response').textContent = data;
-                                                            document.querySelector('#response').innerHTML = formatResponse(data);
-                                                            // Store response in localStorage
-                                                            localStorage.setItem('response', document.querySelector('#response').textContent);
-                                                        })
-                                                        .catch(error => {
-                                                            console.error('There was a problem with your fetch operation:', error);
-                                                        });
+                                                    fetchWithRateLimit(url);
+
+                                                    function fetchWithRateLimit(url) {
+                                                        if (apiCounter <= 10) {
+                                                            // Fetch immediately for the first 10 requests
+                                                            fetchAPI(url);
+                                                        } else {
+                                                            const delay = 2000;
+                                                            setTimeout(() => fetchAPI(url), delay);
+                                                        }
+                                                    }
+
+                                                    function fetchAPI(url) {
+                                                        fetch(url)
+                                                            .then(response => {
+                                                                if (!response.ok) {
+                                                                    throw new Error('Network response was not ok');
+                                                                }
+                                                                return response.text();
+                                                            })
+                                                            .then(data => {
+                                                                console.log(data);
+                                                                document.querySelector('#response').textContent = data;
+                                                                // Store response in localStorage
+                                                                localStorage.setItem('response', document.querySelector('#response').textContent);
+                                                                apiCounter++;
+                                                            })
+                                                            .catch(error => {
+                                                                console.error('There was a problem with your fetch operation:', error);
+                                                            });
+                                                    }
                                                 }
                                             }
                                         } else {
