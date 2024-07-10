@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import org.springframework.ai.openai.api.OpenAiApi;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class ChatResponse {
@@ -12,7 +13,7 @@ public class ChatResponse {
 
     @JsonCreator
     public ChatResponse(@JsonProperty("choices") List<OpenAiApi.ChatCompletionMessage> choices) {
-        this.choices = choices;
+        this.choices = new ArrayList<>(choices);
     }
 
     public List<OpenAiApi.ChatCompletionMessage> getChoices() {

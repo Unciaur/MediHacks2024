@@ -22,6 +22,8 @@ import org.springframework.web.context.request.async.DeferredResult;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import io.github.cdimascio.dotenv.Dotenv;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
@@ -92,10 +94,8 @@ public class ChatController {
 
     @CrossOrigin(origins = "https://medi.letssign.xyz/")
     @GetMapping("/receiveTranscript")
-    public String receiveTranscript(@RequestParam String transcript) {
-        String envVar = System.getenv("TEST");
-        logger.info("Environment variable TEST: {}", envVar);
-        return envVar;
+    public void receiveTranscript(@RequestParam String transcript) {
+
     }
 
     private String translateHexadecimalToString(String hexString) {
@@ -109,4 +109,6 @@ public class ChatController {
         }
         return output.toString();
     }
+
+
 }

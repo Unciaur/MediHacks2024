@@ -3,6 +3,7 @@ package com.medihacks2024.dispatcher_copilot.templates;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class ChatRequest {
@@ -16,7 +17,7 @@ public class ChatRequest {
     @JsonCreator
     public ChatRequest(@JsonProperty("model") String model, @JsonProperty("messages") List<Message> messages) {
         this.model = model;
-        this.messages = messages;
+        this.messages = new ArrayList<>(messages);
         this.temperature = 0;
         this.minTokens = 5;
         this.maxTokens = 100;
@@ -43,7 +44,7 @@ public class ChatRequest {
 
     @JsonProperty("messages")
     public void setMessages(List<Message> messages) {
-        this.messages = messages;
+        this.messages = new ArrayList<>(messages);
     }
 
     @JsonProperty("temperature")
