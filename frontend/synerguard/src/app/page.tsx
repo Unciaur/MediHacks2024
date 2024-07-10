@@ -12,7 +12,6 @@ export default function Home() {
           <div className="bg-white rounded-lg p-4 w-1/2 flex-1 border border-gray-300">
             boo
           </div>
-          {/* Larger box containing the two vertically split boxes */}
           <div className="bg-white rounded-lg p-4 w-1/2 flex-1 border border-gray-300">
             <div className="border border-gray-300 flex flex-col">
               <div className="bg-white rounded-lg p-4 flex-1 border border-gray-300">
