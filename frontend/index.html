@@ -55,6 +55,21 @@
                 let isRecording = false;
                 let responseToggle = true;
 
+                function formatResponse(responseText) {
+                    // Define patterns to insert line breaks before
+                    const patterns = ["Name:", "Address:", "Reason for the call:", "Emergency status:", "Emergency department requested:", "Address/Location:"];
+
+                    // Replace patterns with themselves preceded by <br>, except for the first one
+                    let formattedResponse = responseText;
+                    patterns.forEach((pattern, index) => {
+                        if (index > 0) { // Skip the first pattern to avoid a leading <br>
+                            formattedResponse = formattedResponse.replace(pattern, `<br>${pattern}`);
+                        }
+                    });
+
+                    return formattedResponse;
+                }
+
                 function manageWebSocketConnection(shouldConnect) {
                     const circle1 = document.getElementById('circle1')
                     const circle2 = document.getElementById('circle2')
@@ -119,7 +134,7 @@
                                                         .then(data => {
                                                             console.log(data);
                                                             document.querySelector('#response').textContent = data;
-
+                                                            document.querySelector('#response').innerHTML = formatResponse(data);
                                                             // Store response in localStorage
                                                             localStorage.setItem('response', document.querySelector('#response').textContent);
                                                         })

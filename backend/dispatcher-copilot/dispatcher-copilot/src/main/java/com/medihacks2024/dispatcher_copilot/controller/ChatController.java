@@ -19,6 +19,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.context.request.async.DeferredResult;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -42,6 +44,8 @@ public class ChatController {
 
     @Value("${openai.api.url}")
     private String apiUrl;
+
+    private static final Logger logger = LoggerFactory.getLogger(ChatController.class);
 
     @CrossOrigin(origins = "https://medi.letssign.xyz/")
     @GetMapping("/chat")
@@ -84,5 +88,25 @@ public class ChatController {
         });
 
         return output;
+    }
+
+    @CrossOrigin(origins = "https://medi.letssign.xyz/")
+    @GetMapping("/receiveTranscript")
+    public String receiveTranscript(@RequestParam String transcript) {
+        String envVar = System.getenv("TEST");
+        logger.info("Environment variable TEST: {}", envVar);
+        return envVar;
+    }
+
+    private String translateHexadecimalToString(String hexString) {
+        StringBuilder output = new StringBuilder();
+        String[] codes = hexString.split("&");
+        for (String code : codes) {
+            if (!code.isEmpty()) {
+                int decimal = Integer.parseInt(code, 16);
+                output.append((char) decimal);
+            }
+        }
+        return output.toString();
     }
 }
