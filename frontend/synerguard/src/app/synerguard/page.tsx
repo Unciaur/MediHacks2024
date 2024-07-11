@@ -23,18 +23,34 @@ const Page = () => {
 
   const navbarHeight = '70px';
 
-useEffect(() => {
-  // Load stored transcript on page load
-  const storedTranscript = localStorage.getItem('transcript');
-  if (storedTranscript) {
-    setTranscript(storedTranscript);
-  }
-}, []);
+  useEffect(() => {
+    // Load stored transcript on page load
+    const storedTranscript = localStorage.getItem('transcript');
+    if (storedTranscript) {
+      setTranscript(storedTranscript);
+    }
+  }, []);
 
   useEffect(() => {
     // Save transcript to localStorage whenever it changes
     localStorage.setItem('transcript', transcript);
   }, [transcript]); // Triggered whenever transcript state changes
+
+  useEffect(() => {
+    if (startButtonRef.current) {
+      startButtonRef.current.textContent = isRecording ? 'Stop Voice Input' : 'Start Voice Input';
+    }
+
+    if (isRecording) {
+      manageWebSocketConnection(true);
+    }
+
+    return () => {
+      if (socket && socket.readyState === WebSocket.OPEN) {
+        manageWebSocketConnection(false);
+      }
+    };
+  }, [isRecording]);
 
   const formatResponse = (responseText: string) => {
     // Define patterns to insert line breaks before
@@ -193,29 +209,7 @@ useEffect(() => {
   };
 
   const handleStartButtonClick = () => {
-    // Toggle recording state
     setIsRecording(!isRecording);
-
-    // Update UI based on the new state
-    if (isRecording) {
-      // This block now executes when we're stopping the recording
-      if (startButtonRef.current) {
-        startButtonRef.current.textContent = 'Start Voice Input';
-        startButtonRef.current.style.backgroundColor = '#4CAF50';
-        startButtonRef.current.style.color = '#ffffff';
-      }
-      // Ensure WebSocket is closed
-      manageWebSocketConnection(false); // Explicitly pass false to close the connection
-    } else {
-      // This block executes when we're starting the recording
-      if (startButtonRef.current) {
-        startButtonRef.current.textContent = 'Stop Voice Input';
-        startButtonRef.current.style.backgroundColor = '#ff0000';
-        startButtonRef.current.style.color = '#ffffff';
-      }
-      // Ensure WebSocket is opened
-      manageWebSocketConnection(true); // Explicitly pass true to open the connection
-    }
   };
 
   const handleClearStorageButtonClick = () => {
