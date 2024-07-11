@@ -212,9 +212,10 @@ useEffect(() => {
         (startButtonRef.current as HTMLButtonElement).style.backgroundColor = '#ff0000';
         (startButtonRef.current as HTMLButtonElement).style.color = '#ffffff';
         isRecording = true;
+        manageWebSocketConnection(isRecording);
       }
     }
-    manageWebSocketConnection(isRecording);
+
   };
 
   const handleClearStorageButtonClick = () => {
