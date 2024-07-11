@@ -19,6 +19,8 @@ const Page = () => {
   const hiddenTranscriptionRef = useRef(null);
   let socket: WebSocket | null = null;
 
+  let webSockets: (WebSocket | null)[] = [];
+
 
   const navbarHeight = '70px';
 
@@ -193,14 +195,22 @@ useEffect(() => {
     }
   };
 
-  const handleStartButtonClick = () => {
+const handleStartButtonClick = () => {
     if (isRecording) {
       if (startButtonRef.current) {
         (startButtonRef.current! as HTMLElement).textContent = 'Start Voice Input';
         (startButtonRef.current as HTMLElement).style.backgroundColor = '#4CAF50';
         (startButtonRef.current as HTMLElement).style.color = '#ffffff';
-        socket?.close();
-        socket = null;
+        
+        // Step 3: Close every WebSocket instance
+        webSockets.forEach((ws) => {
+          if (ws?.readyState === WebSocket.OPEN) {
+            ws.close();
+          }
+        });
+
+        webSockets = [];
+        
         console.log('WebSocket Disconnected');
         mediaRecorder.stop();
         console.log('MediaRecorder Stopped');
@@ -213,10 +223,11 @@ useEffect(() => {
         (startButtonRef.current as HTMLButtonElement).style.color = '#ffffff';
         isRecording = true;
         manageWebSocketConnection(isRecording);
+        
+        webSockets.push(socket);
       }
     }
-
-  };
+};
 
   const handleClearStorageButtonClick = () => {
     localStorage.removeItem('transcript');
