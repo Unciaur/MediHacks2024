@@ -204,15 +204,16 @@ useEffect(() => {
         console.log('WebSocket Disconnected');
         mediaRecorder.stop();
         console.log('MediaRecorder Stopped');
+        isRecording = false;
       }
     } else {
       if (startButtonRef.current) {
         (startButtonRef.current as HTMLButtonElement).textContent = 'Stop Voice Input';
         (startButtonRef.current as HTMLButtonElement).style.backgroundColor = '#ff0000';
         (startButtonRef.current as HTMLButtonElement).style.color = '#ffffff';
+        isRecording = true;
       }
     }
-    toggleIsRecording();
     manageWebSocketConnection(isRecording);
   };
 
