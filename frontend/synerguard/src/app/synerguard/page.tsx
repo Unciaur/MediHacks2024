@@ -217,7 +217,16 @@ const Page = () => {
     localStorage.removeItem('response');
     setTranscript('');
     setResponse('');
-    // Do we need more stuff...?
+
+    const transcriptElement = document.getElementById('transcript');
+    const responseElement = document.getElementById('response');
+
+    if (transcriptElement) {
+      transcriptElement.innerHTML = '';
+    }
+    if (responseElement) {
+      responseElement.innerHTML = '';
+    }
   };
 
   const handleToggleResponseButtonClick = () => {
