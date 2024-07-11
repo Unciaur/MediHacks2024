@@ -87,6 +87,7 @@ useEffect(() => {
                   
           
           socket.onmessage = (message) => {
+            
             try {
               const received = JSON.parse(message.data);
               if (received.channel && received.channel.alternatives && received.channel.alternatives.length > 0) {
@@ -264,12 +265,15 @@ useEffect(() => {
             <div className="bg-white rounded-lg p-4 flex-grow border border-gray-300 mb-4" style={{ overflowY: 'auto' }}>
               <div className="transcription">
                 <p>Transcription:</p>
+
                 <p id="transcript">{transcript.split('\n').map((line, index) => (
                   <span key={index}>
                     {line}
-                    <br />
+                    
+                    {index !== transcript.split('\n').length - 1 && <br />} {/* Render <br> except after the last line */}
                   </span>
                 ))}</p>
+
 
               </div>
             </div>
@@ -282,14 +286,6 @@ useEffect(() => {
         </div>
       </main>
       <style jsx>{`
-        
-        .transcription {
-          line-height: 1.4; /* also makes spacing smaller */
-        }
-
-        .transcription p {
-          margin-bottom: 8px; /* make spacign smaller */
-        }
 
         .button-container {
           display: flex;
