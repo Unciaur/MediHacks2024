@@ -18,9 +18,6 @@ const Page = () => {
   const responseRef = useRef(null);
   const hiddenTranscriptionRef = useRef(null);
   let socket: WebSocket | null = null;
-  
-
-  const navbarHe
 
   const navbarHeight = '70px';
 
@@ -283,56 +280,50 @@ useEffect(() => {
           </div>
         </div>
       </main>
-      <style jsx>{`
-        
-        .transcription {
-          line-height: 1.4; /* also makes spacing smaller */
-        }
+        <style jsx>{`
+          
+          .transcription {
+            line-height: 1.4; /* also makes spacing smaller */
+          }
 
-        .transcription p {
-          margin-bottom: 8px; /* make spacign smaller */
-        }
+          .transcription p {
+            margin-bottom: 8px; /* make spacign smaller */
+          }
 
-        .button-container {
-          display: flex;
-          flex-direction: column;
-          align-items: center;
-          margin-bottom: 20px; /* Adjust spacing between the button groups */
-        }
+          .button-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-bottom: 20px; /* Adjust spacing between the button groups */
+          }
 
-        .sbtn {
-          display: flex;
-          justify-content: center;
-          align-items: center;
-          flex-direction: column; /* Added for better vertical alignment */
-          margin-bottom: 20px; /* Adjust spacing between the circular button and smaller buttons */
-        }
-        
-        .circular-button {
-          width: 50vh;
-          height: 50vh;
-          background-color: #4CAF50;
-          color: white;
-          border: 4px solid #ccc;
-          border-radius: 50%;
-          font-size:calc(8px + 2.5vh);
-          cursor: pointer;
-          text-align: center;
-          line-height: 100px; /* This aligns the text vertically */
-        }
+          .sbtn {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column; /* Added for better vertical alignment */
+            margin-bottom: 20px; /* Adjust spacing between the circular button and smaller buttons */
+          }
+          
+          .circular-button {
+            width: 50vh;
+            height: 50vh;
+            background-color: #4CAF50;
+            color: white;
+            border: 4px solid #ccc;
+            border-radius: 50%;
+            font-size:calc(8px + 2.5vh);
+            cursor: pointer;
+            text-align: center;
+            line-height: 100px; /* This aligns the text vertically */
+          }
 
-        .circular-button:hover {
-          border-color: #007bff;
+          .circular-button:hover {
+            border-color: #007bff;
+          }
         }
-
-order-color: #007bff;
-        }
-        .rounded-outline-button:focus {
-          border-color: #0056b3;
-        }
-      `}</style>
+      ` }</style>
     </>
   );
 }
-
 export default Page;
