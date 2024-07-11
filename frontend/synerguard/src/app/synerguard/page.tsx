@@ -4,14 +4,15 @@ import React, { useEffect, useState, useRef, RefObject } from 'react';
 import Navbar from '../components/Navbar';
 
 const Page = () => {
-  let isRecording = false;
+  const [isRecording, setIsRecording] = useState(false);
   let [responseToggle, setResponseToggle] = useState(true);
   let [apiCounter, setApiCounter] = useState(0);
   let [transcript, setTranscript] = useState('');
   let [response, setResponse] = useState('');
-  const startButtonRef = useRef(null);
-  const clearStorageButtonRef = useRef(null);
-  const toggleResponseButtonRef = useRef(null);
+  const startButtonRef = useRef<HTMLButtonElement>(null);
+  const clearStorageButtonRef = useRef<HTMLButtonElement>(null);
+  const toggleResponseButtonRef = useRef<HTMLButtonElement>(null);
+  const exportTranscriptButtonRef = useRef<HTMLButtonElement>(null);
   const circle1Ref = useRef(null);
   const circle2Ref = useRef(null);
   const transcriptRef = useRef(null);
@@ -21,11 +22,6 @@ const Page = () => {
 
 
   const navbarHeight = '70px';
-
-  function toggleIsRecording() {
-    isRecording = !isRecording;
-  }
-
 
 useEffect(() => {
   // Load stored transcript on page load
@@ -87,6 +83,7 @@ useEffect(() => {
                   
           
           socket.onmessage = (message) => {
+            
             try {
               const received = JSON.parse(message.data);
               if (received.channel && received.channel.alternatives && received.channel.alternatives.length > 0) {
@@ -176,6 +173,8 @@ useEffect(() => {
         }).catch(error => {
           console.error('Error getting user media:', error);
         });
+      } else {
+        console.error('WebSocket is already connected.');
       }
     } else {
       if (socket && socket.readyState === WebSocket.OPEN) {
@@ -194,29 +193,29 @@ useEffect(() => {
   };
 
   const handleStartButtonClick = () => {
-    if (isRecording) {
-      if (startButtonRef.current) {
-        (startButtonRef.current! as HTMLElement).textContent = 'Start Voice Input';
-        (startButtonRef.current as HTMLElement).style.backgroundColor = '#4CAF50';
-        (startButtonRef.current as HTMLElement).style.color = '#ffffff';
-        socket?.close();
-        socket = null;
-        console.log('WebSocket Disconnected');
-        mediaRecorder.stop();
-        console.log('MediaRecorder Stopped');
-        isRecording = false;
-        manageWebSocketConnection(isRecording);
-      }
-    } else {
-      if (startButtonRef.current) {
-        (startButtonRef.current as HTMLButtonElement).textContent = 'Stop Voice Input';
-        (startButtonRef.current as HTMLButtonElement).style.backgroundColor = '#ff0000';
-        (startButtonRef.current as HTMLButtonElement).style.color = '#ffffff';
-        isRecording = true;
-        manageWebSocketConnection(isRecording);
-      }
-    }
+    // Toggle recording state
+    setIsRecording(!isRecording);
 
+    // Update UI based on the new state
+    if (isRecording) {
+      // This block now executes when we're stopping the recording
+      if (startButtonRef.current) {
+        startButtonRef.current.textContent = 'Start Voice Input';
+        startButtonRef.current.style.backgroundColor = '#4CAF50';
+        startButtonRef.current.style.color = '#ffffff';
+      }
+      // Ensure WebSocket is closed
+      manageWebSocketConnection(false); // Explicitly pass false to close the connection
+    } else {
+      // This block executes when we're starting the recording
+      if (startButtonRef.current) {
+        startButtonRef.current.textContent = 'Stop Voice Input';
+        startButtonRef.current.style.backgroundColor = '#ff0000';
+        startButtonRef.current.style.color = '#ffffff';
+      }
+      // Ensure WebSocket is opened
+      manageWebSocketConnection(true); // Explicitly pass true to open the connection
+    }
   };
 
   const handleClearStorageButtonClick = () => {
@@ -272,12 +271,15 @@ useEffect(() => {
             <div className="bg-white rounded-lg p-4 flex-grow border border-gray-300 mb-4" style={{ overflowY: 'auto' }}>
               <div className="transcription">
                 <p>Transcription:</p>
+
                 <p id="transcript">{transcript.split('\n').map((line, index) => (
                   <span key={index}>
                     {line}
-                    <br />
+                    
+                    {index !== transcript.split('\n').length - 1 && <br />} {/* Render <br> except after the last line */}
                   </span>
                 ))}</p>
+
 
               </div>
             </div>
@@ -290,14 +292,6 @@ useEffect(() => {
         </div>
       </main>
       <style jsx>{`
-        
-        .transcription {
-          line-height: 1.4; /* also makes spacing smaller */
-        }
-
-        .transcription p {
-          margin-bottom: 8px; /* make spacign smaller */
-        }
 
         .button-container {
           display: flex;
