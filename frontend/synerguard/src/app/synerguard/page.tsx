@@ -96,27 +96,20 @@ const Page = () => {
             });
             mediaRecorder.start(100);
           };
-                  
-          
+
+
           socket.onmessage = (message) => {
-            
             try {
               const received = JSON.parse(message.data);
               if (received.channel && received.channel.alternatives && received.channel.alternatives.length > 0) {
-                const transcript = received.channel.alternatives[0].transcript;
-                if (transcript && received.is_final) {
-                  console.log(transcript);
-  
-                  const now = new Date();
-                  const year = now.getFullYear();
-                  const month = String(now.getMonth() + 1).padStart(2, '0'); // Month is zero-indexed
-                  const day = String(now.getDate()).padStart(2, '0');
-                  const hour = String(now.getHours()).padStart(2, '0');
-                  const minute = String(now.getMinutes()).padStart(2, '0');
-                  const second = String(now.getSeconds()).padStart(2, '0');
-                  const timestamp = `${year}/${month}/${day}/${hour}:${minute}:${second}`;
+                const newTranscript = received.channel.alternatives[0].transcript;
+                if (newTranscript && received.is_final) {
+                  console.log(newTranscript);
 
-                  setTranscript(prevTranscript => prevTranscript + `${timestamp} > ${transcript}\n`);
+                  const now = new Date();
+                  const timestamp = `${now.getFullYear()}/${String(now.getMonth() + 1).padStart(2, '0')}/${String(now.getDate()).padStart(2, '0')}/${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}:${String(now.getSeconds()).padStart(2, '0')}`;
+
+                  setTranscript(prevTranscript => `${prevTranscript}${timestamp} > ${newTranscript}\n`);
                   
                   const existingTranscriptElement = document.querySelector('#transcript');
                   if (existingTranscriptElement) {
@@ -217,16 +210,6 @@ const Page = () => {
     localStorage.removeItem('response');
     setTranscript('');
     setResponse('');
-
-    const transcriptElement = document.getElementById('transcript');
-    const responseElement = document.getElementById('response');
-
-    if (transcriptElement) {
-      transcriptElement.innerHTML = '';
-    }
-    if (responseElement) {
-      responseElement.innerHTML = '';
-    }
   };
 
   const handleToggleResponseButtonClick = () => {
