@@ -5,10 +5,10 @@ import Navbar from '../components/Navbar';
 
 const Page = () => {
   let isRecording = false;
-  const [responseToggle, setResponseToggle] = useState(true);
+  let [responseToggle, setResponseToggle] = useState(true);
   let [apiCounter, setApiCounter] = useState(0);
-  const [transcript, setTranscript] = useState('');
-  const [response, setResponse] = useState('');
+  let [transcript, setTranscript] = useState('');
+  let [response, setResponse] = useState('');
   const startButtonRef = useRef(null);
   const clearStorageButtonRef = useRef(null);
   const toggleResponseButtonRef = useRef(null);
@@ -18,8 +18,6 @@ const Page = () => {
   const responseRef = useRef(null);
   const hiddenTranscriptionRef = useRef(null);
   let socket: WebSocket | null = null;
-
-  let webSockets: (WebSocket | null)[] = [];
 
 
   const navbarHeight = '70px';
@@ -195,26 +193,19 @@ useEffect(() => {
     }
   };
 
-const handleStartButtonClick = () => {
+  const handleStartButtonClick = () => {
     if (isRecording) {
       if (startButtonRef.current) {
         (startButtonRef.current! as HTMLElement).textContent = 'Start Voice Input';
         (startButtonRef.current as HTMLElement).style.backgroundColor = '#4CAF50';
         (startButtonRef.current as HTMLElement).style.color = '#ffffff';
-        
-        // Step 3: Close every WebSocket instance
-        webSockets.forEach((ws) => {
-          if (ws?.readyState === WebSocket.OPEN) {
-            ws.close();
-          }
-        });
-
-        webSockets = [];
-        
+        socket?.close();
+        socket = null;
         console.log('WebSocket Disconnected');
         mediaRecorder.stop();
         console.log('MediaRecorder Stopped');
         isRecording = false;
+        manageWebSocketConnection(isRecording);
       }
     } else {
       if (startButtonRef.current) {
@@ -223,11 +214,10 @@ const handleStartButtonClick = () => {
         (startButtonRef.current as HTMLButtonElement).style.color = '#ffffff';
         isRecording = true;
         manageWebSocketConnection(isRecording);
-        
-        webSockets.push(socket);
       }
     }
-};
+
+  };
 
   const handleClearStorageButtonClick = () => {
     localStorage.removeItem('transcript');
