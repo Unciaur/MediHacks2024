@@ -104,7 +104,7 @@ useEffect(() => {
             });
             mediaRecorder.start(100);
           };
-          
+                  
           
           socket.onmessage = (message) => {
             try {
@@ -113,7 +113,6 @@ useEffect(() => {
                 const transcript = received.channel.alternatives[0].transcript;
                 if (transcript && received.is_final) {
                   console.log(transcript);
-                  setTranscript(prevTranscript => prevTranscript + transcript + '\n');
   
                   const now = new Date();
                   const year = now.getFullYear();
@@ -123,6 +122,8 @@ useEffect(() => {
                   const minute = String(now.getMinutes()).padStart(2, '0');
                   const second = String(now.getSeconds()).padStart(2, '0');
                   const timestamp = `${year}/${month}/${day}/${hour}:${minute}:${second}`;
+
+                  setTranscript(prevTranscript => prevTranscript + `${timestamp} > ${transcript}\n`);
                   
                   const existingTranscriptElement = document.querySelector('#transcript');
                   if (existingTranscriptElement) {
@@ -279,7 +280,12 @@ useEffect(() => {
             <div className="bg-white rounded-lg p-4 flex-grow border border-gray-300 mb-4" style={{ overflowY: 'auto' }}>
               <div className="transcription">
                 <p>Transcription:</p>
-                <p id="transcript">{transcript}</p>
+                <p id="transcript">{transcript.split('\n').map((line, index) => (
+                  <span key={index}>
+                    {line}
+                    <br />
+                  </span>
+                ))}</p>
 
               </div>
             </div>
@@ -293,6 +299,14 @@ useEffect(() => {
       </main>
       <style jsx>{`
         
+        .transcription {
+          line-height: 1.4; /* also makes spacing smaller */
+        }
+
+        .transcription p {
+          margin-bottom: 8px; /* make spacign smaller */
+        }
+
         .button-container {
           display: flex;
           flex-direction: column;
