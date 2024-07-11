@@ -5,10 +5,10 @@ import Navbar from '../components/Navbar';
 
 const Page = () => {
   let isRecording = false;
-  const [responseToggle, setResponseToggle] = useState(true);
+  let [responseToggle, setResponseToggle] = useState(true);
   let [apiCounter, setApiCounter] = useState(0);
-  const [transcript, setTranscript] = useState('');
-  const [response, setResponse] = useState('');
+  let [transcript, setTranscript] = useState('');
+  let [response, setResponse] = useState('');
   const startButtonRef = useRef(null);
   const clearStorageButtonRef = useRef(null);
   const toggleResponseButtonRef = useRef(null);
@@ -200,16 +200,24 @@ useEffect(() => {
         (startButtonRef.current! as HTMLElement).textContent = 'Start Voice Input';
         (startButtonRef.current as HTMLElement).style.backgroundColor = '#4CAF50';
         (startButtonRef.current as HTMLElement).style.color = '#ffffff';
+        socket?.close();
+        socket = null;
+        console.log('WebSocket Disconnected');
+        mediaRecorder.stop();
+        console.log('MediaRecorder Stopped');
+        isRecording = false;
+        manageWebSocketConnection(isRecording);
       }
     } else {
       if (startButtonRef.current) {
         (startButtonRef.current as HTMLButtonElement).textContent = 'Stop Voice Input';
         (startButtonRef.current as HTMLButtonElement).style.backgroundColor = '#ff0000';
         (startButtonRef.current as HTMLButtonElement).style.color = '#ffffff';
+        isRecording = true;
+        manageWebSocketConnection(isRecording);
       }
     }
-    toggleIsRecording();
-    manageWebSocketConnection(isRecording);
+
   };
 
   const handleClearStorageButtonClick = () => {
