@@ -35,26 +35,6 @@ useEffect(() => {
   }
 }, []);
 
-
-  /* useEffect(() => {
-    // Load stored transcript and response on page load
-    const storedTranscript = localStorage.getItem('transcript');
-    if (storedTranscript) {
-      setTranscript(storedTranscript);
-    }
-    const storedResponse = localStorage.getItem('response');
-    if (storedResponse) {
-      setResponse(formatResponse(storedResponse));
-    }
-
-    /*Clean up
-    return () => {
-      if (socket && socket.readyState === WebSocket.OPEN) {
-        socket.close();
-      }
-    }; 
-  }, []); */
-
   useEffect(() => {
     // Save transcript to localStorage whenever it changes
     localStorage.setItem('transcript', transcript);
@@ -133,10 +113,7 @@ useEffect(() => {
                   if (hiddenTranscriptionElement && existingTranscriptElement) {
                     hiddenTranscriptionElement.textContent = existingTranscriptElement.textContent ?? '';
                   }
-  
-                  // Store transcript in localStorage
-                  //localStorage.setItem('transcript', document.querySelector('#transcript')?.innerHTML ?? '');
-                  
+                
                   const encodedTranscript = encodeURIComponent(document.querySelector('#transcript')?.textContent ?? '');
                   const url = `https://api.letssign.xyz/chat?prompt=${encodedTranscript}`;
                   
@@ -156,8 +133,7 @@ useEffect(() => {
                           if (responseElement) {
                             responseElement.textContent = data;
                           }
-                          // Store response in localStorage
-                          //localStorage.setItem('response', document.querySelector('#response')?.textContent ?? '');
+                        
                           apiCounter++;
                         })
                         .catch(error => {
@@ -250,7 +226,15 @@ useEffect(() => {
 
   const handleExportTranscriptButtonClick = () => {
     // Export transcript to a file...
-
+    const blob = new Blob([transcript], { type: 'text/plain' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'transcript.txt';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
   }
 
   return (
@@ -267,7 +251,7 @@ useEffect(() => {
               <div className="button-row flex justify-center">
                 <button className="csbtn rounded-outline-button" id="clearStorageButton" ref={clearStorageButtonRef} onClick={handleClearStorageButtonClick}>Clear Transcript</button>
                 <button className="trbtn rounded-outline-button" id="toggleResponseButton" ref={toggleResponseButtonRef} onClick={handleToggleResponseButtonClick}>Toggle Response</button>
-                <button className="etbtn rounded-outline-button" id="exportTranscriptButton">Export Transcript</button>
+                <button className="etbtn rounded-outline-button" id="exportTranscriptButton" ref={transcriptRef} onClick={handleExportTranscriptButtonClick}>Export Transcript</button>
               </div>
             </div>
             </div>
