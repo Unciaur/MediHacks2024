@@ -18,7 +18,7 @@ const Page = () => {
   const responseRef = useRef(null);
   const hiddenTranscriptionRef = useRef(null);
   let socket: WebSocket | null = null;
-  
+
 
   const navbarHeight = '70px';
 
@@ -26,10 +26,17 @@ const Page = () => {
     isRecording = !isRecording;
   }
 
-  useEffect(() => {
-    // Equivalent to document.addEventListener('DOMContentLoaded', function() { ... });
-    // Your initialization code here
 
+useEffect(() => {
+  // Load stored transcript on page load
+  const storedTranscript = localStorage.getItem('transcript');
+  if (storedTranscript) {
+    setTranscript(storedTranscript);
+  }
+}, []);
+
+
+  /* useEffect(() => {
     // Load stored transcript and response on page load
     const storedTranscript = localStorage.getItem('transcript');
     if (storedTranscript) {
@@ -39,7 +46,19 @@ const Page = () => {
     if (storedResponse) {
       setResponse(formatResponse(storedResponse));
     }
-  }, []);
+
+    /*Clean up
+    return () => {
+      if (socket && socket.readyState === WebSocket.OPEN) {
+        socket.close();
+      }
+    }; 
+  }, []); */
+
+  useEffect(() => {
+    // Save transcript to localStorage whenever it changes
+    localStorage.setItem('transcript', transcript);
+  }, [transcript]); // Triggered whenever transcript state changes
 
   const formatResponse = (responseText: string) => {
     // Define patterns to insert line breaks before
@@ -85,6 +104,8 @@ const Page = () => {
             });
             mediaRecorder.start(100);
           };
+          
+          
           socket.onmessage = (message) => {
             try {
               const received = JSON.parse(message.data);
@@ -92,6 +113,7 @@ const Page = () => {
                 const transcript = received.channel.alternatives[0].transcript;
                 if (transcript && received.is_final) {
                   console.log(transcript);
+                  setTranscript(prevTranscript => prevTranscript + transcript + '\n');
   
                   const now = new Date();
                   const year = now.getFullYear();
@@ -112,8 +134,8 @@ const Page = () => {
                   }
   
                   // Store transcript in localStorage
-                  localStorage.setItem('transcript', document.querySelector('#transcript')?.innerHTML ?? '');
-              
+                  //localStorage.setItem('transcript', document.querySelector('#transcript')?.innerHTML ?? '');
+                  
                   const encodedTranscript = encodeURIComponent(document.querySelector('#transcript')?.textContent ?? '');
                   const url = `https://api.letssign.xyz/chat?prompt=${encodedTranscript}`;
                   
@@ -134,7 +156,7 @@ const Page = () => {
                             responseElement.textContent = data;
                           }
                           // Store response in localStorage
-                          localStorage.setItem('response', document.querySelector('#response')?.textContent ?? '');
+                          //localStorage.setItem('response', document.querySelector('#response')?.textContent ?? '');
                           apiCounter++;
                         })
                         .catch(error => {
@@ -198,7 +220,7 @@ const Page = () => {
     if (isRecording) {
       if (startButtonRef.current) {
         (startButtonRef.current! as HTMLElement).textContent = 'Start Voice Input';
-        (startButtonRef.current as HTMLElement).style.backgroundColor = '#007bff';
+        (startButtonRef.current as HTMLElement).style.backgroundColor = '#4CAF50';
         (startButtonRef.current as HTMLElement).style.color = '#ffffff';
       }
     } else {
@@ -237,19 +259,28 @@ const Page = () => {
         <div className="flex w-full flex-1 justify-center gap-x-4">
           <div className="bg-white rounded-lg p-4 w-1/2 flex-1 border border-gray-300">
             <div className="left-block" id="container">
-              <div className="sbtn">
-                <button className="btn rounded-outline-button" id="startButton" ref={startButtonRef} onClick={handleStartButtonClick}>Start Voice Input</button>
+            <div className="button-container">
+              <div className="sbtn flex justify-center items-center">
+                <button className="btn circular-button bg-slate-500" id="startButton" ref={startButtonRef} onClick={handleStartButtonClick}>Start Voice Input</button>
               </div>
-              <button className="csbtn rounded-outline-button" id="clearStorageButton" ref={clearStorageButtonRef} onClick={handleClearStorageButtonClick}>Clear Transcript</button>
-              <button className="trbtn rounded-outline-button" id="toggleResponseButton" ref={toggleResponseButtonRef} onClick={handleToggleResponseButtonClick}>Toggle Response</button>
-              <button className="etbtn rounded-outline-button" id="exportTranscriptButton">Export Transcript</button>
+              <div className="button-row flex justify-center">
+                <button className="csbtn rounded-outline-button" id="clearStorageButton" ref={clearStorageButtonRef} onClick={handleClearStorageButtonClick}>Clear Transcript</button>
+                <button className="trbtn rounded-outline-button" id="toggleResponseButton" ref={toggleResponseButtonRef} onClick={handleToggleResponseButtonClick}>Toggle Response</button>
+                <button className="etbtn rounded-outline-button" id="exportTranscriptButton">Export Transcript</button>
+              </div>
             </div>
+            </div>
+
+            
+
+            
           </div>
           <div className="bg-white rounded-lg p-4 w-1/2 flex flex-col border border-gray-300" style={{ minHeight: `calc(100vh - ${navbarHeight} - 48px)` }}>
             <div className="bg-white rounded-lg p-4 flex-grow border border-gray-300 mb-4" style={{ overflowY: 'auto' }}>
               <div className="transcription">
                 <p>Transcription:</p>
-                <p id="transcript"></p>
+                <p id="transcript">{transcript}</p>
+
               </div>
             </div>
             <div className="bg-white rounded-lg p-4 flex-grow border border-gray-300" style={{ overflowY: 'auto' }}>
@@ -261,6 +292,39 @@ const Page = () => {
         </div>
       </main>
       <style jsx>{`
+        
+        .button-container {
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          margin-bottom: 20px; /* Adjust spacing between the button groups */
+        }
+
+        .sbtn {
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          flex-direction: column; /* Added for better vertical alignment */
+          margin-bottom: 20px; /* Adjust spacing between the circular button and smaller buttons */
+        }
+        
+        .circular-button {
+          width: 50vh;
+          height: 50vh;
+          background-color: #4CAF50;
+          color: white;
+          border: 4px solid #ccc;
+          border-radius: 50%;
+          font-size:calc(8px + 2.5vh);
+          cursor: pointer;
+          text-align: center;
+          line-height: 100px; /* This aligns the text vertically */
+        }
+
+        .circular-button:hover {
+          border-color: #007bff;
+        }
+
         .rounded-outline-button {
           border-radius: 8px;
           border: 2px solid #ccc;
