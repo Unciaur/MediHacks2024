@@ -227,7 +227,8 @@ useEffect(() => {
   const handleExportTranscriptButtonClick = () => {
     // Export transcript to a file...
     const blob = new Blob([transcript], { type: 'text/plain' });
-    const url = URL.createObjectURL(blob);
+    const responseBlob = new Blob([response], { type: 'text/plain' });
+    const url = URL.createObjectURL(new Blob([blob, "\n", "\n", responseBlob]));
     const a = document.createElement('a');
     a.href = url;
     a.download = 'transcript.txt';
