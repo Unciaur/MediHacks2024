@@ -18,7 +18,9 @@ const Page = () => {
   const responseRef = useRef(null);
   const hiddenTranscriptionRef = useRef(null);
   let socket: WebSocket | null = null;
+  
 
+  const navbarHe
 
   const navbarHeight = '70px';
 
@@ -225,10 +227,9 @@ useEffect(() => {
   };
 
   const handleExportTranscriptButtonClick = () => {
-    // Export transcript to a file...
+    // Export transcript to a file. TODO - Add response to the file as well.
     const blob = new Blob([transcript], { type: 'text/plain' });
-    const responseBlob = new Blob([response], { type: 'text/plain' });
-    const url = URL.createObjectURL(new Blob([blob, "\n", "\n", responseBlob]));
+    const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
     a.download = 'transcript.txt';
@@ -324,16 +325,7 @@ useEffect(() => {
           border-color: #007bff;
         }
 
-        .rounded-outline-button {
-          border-radius: 8px;
-          border: 2px solid #ccc;
-          padding: 8px 16px;
-          margin: 4px;
-          cursor: pointer;
-          outline: none;
-        }
-        .rounded-outline-button:hover {
-          border-color: #007bff;
+order-color: #007bff;
         }
         .rounded-outline-button:focus {
           border-color: #0056b3;
