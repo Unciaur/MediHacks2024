@@ -19,6 +19,7 @@ const Page = () => {
   const hiddenTranscriptionRef = useRef(null);
   let socket: WebSocket | null = null;
 
+
   const navbarHeight = '70px';
 
   function toggleIsRecording() {
@@ -224,7 +225,7 @@ useEffect(() => {
   };
 
   const handleExportTranscriptButtonClick = () => {
-    // Export transcript to a file. TODO - Add response to the file as well.
+    // Export transcript to a file...
     const blob = new Blob([transcript], { type: 'text/plain' });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
@@ -280,50 +281,65 @@ useEffect(() => {
           </div>
         </div>
       </main>
-        <style jsx>{`
-          
-          .transcription {
-            line-height: 1.4; /* also makes spacing smaller */
-          }
-
-          .transcription p {
-            margin-bottom: 8px; /* make spacign smaller */
-          }
-
-          .button-container {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            margin-bottom: 20px; /* Adjust spacing between the button groups */
-          }
-
-          .sbtn {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            flex-direction: column; /* Added for better vertical alignment */
-            margin-bottom: 20px; /* Adjust spacing between the circular button and smaller buttons */
-          }
-          
-          .circular-button {
-            width: 50vh;
-            height: 50vh;
-            background-color: #4CAF50;
-            color: white;
-            border: 4px solid #ccc;
-            border-radius: 50%;
-            font-size:calc(8px + 2.5vh);
-            cursor: pointer;
-            text-align: center;
-            line-height: 100px; /* This aligns the text vertically */
-          }
-
-          .circular-button:hover {
-            border-color: #007bff;
-          }
+      <style jsx>{`
+        
+        .transcription {
+          line-height: 1.4; /* also makes spacing smaller */
         }
-      ` }</style>
+
+        .transcription p {
+          margin-bottom: 8px; /* make spacign smaller */
+        }
+
+        .button-container {
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          margin-bottom: 20px; /* Adjust spacing between the button groups */
+        }
+
+        .sbtn {
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          flex-direction: column; /* Added for better vertical alignment */
+          margin-bottom: 20px; /* Adjust spacing between the circular button and smaller buttons */
+        }
+        
+        .circular-button {
+          width: 50vh;
+          height: 50vh;
+          background-color: #4CAF50;
+          color: white;
+          border: 4px solid #ccc;
+          border-radius: 50%;
+          font-size:calc(8px + 2.5vh);
+          cursor: pointer;
+          text-align: center;
+          line-height: 100px; /* This aligns the text vertically */
+        }
+
+        .circular-button:hover {
+          border-color: #007bff;
+        }
+
+        .rounded-outline-button {
+          border-radius: 8px;
+          border: 2px solid #ccc;
+          padding: 8px 16px;
+          margin: 4px;
+          cursor: pointer;
+          outline: none;
+        }
+        .rounded-outline-button:hover {
+          border-color: #007bff;
+        }
+        .rounded-outline-button:focus {
+          border-color: #0056b3;
+        }
+      `}</style>
     </>
   );
 }
+
 export default Page;
