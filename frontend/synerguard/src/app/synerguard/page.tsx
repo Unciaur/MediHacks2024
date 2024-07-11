@@ -1,8 +1,234 @@
-import Image from "next/image";
-import Navbar from "../components/Navbar";
+'use client';
 
-export default function Home() {
-  const navbarHeight = "70px";
+import React, { useEffect, useState, useRef, RefObject } from 'react';
+import Navbar from '../components/Navbar';
+
+const Page = () => {
+  let isRecording = false;
+  const [responseToggle, setResponseToggle] = useState(true);
+  let [apiCounter, setApiCounter] = useState(0);
+  const [transcript, setTranscript] = useState('');
+  const [response, setResponse] = useState('');
+  const startButtonRef = useRef(null);
+  const clearStorageButtonRef = useRef(null);
+  const toggleResponseButtonRef = useRef(null);
+  const circle1Ref = useRef(null);
+  const circle2Ref = useRef(null);
+  const transcriptRef = useRef(null);
+  const responseRef = useRef(null);
+  const hiddenTranscriptionRef = useRef(null);
+  let socket: WebSocket | null = null;
+  
+
+  const navbarHeight = '70px';
+
+  function toggleIsRecording() {
+    isRecording = !isRecording;
+  }
+
+  useEffect(() => {
+    // Equivalent to document.addEventListener('DOMContentLoaded', function() { ... });
+    // Your initialization code here
+
+    // Load stored transcript and response on page load
+    const storedTranscript = localStorage.getItem('transcript');
+    if (storedTranscript) {
+      setTranscript(storedTranscript);
+    }
+    const storedResponse = localStorage.getItem('response');
+    if (storedResponse) {
+      setResponse(formatResponse(storedResponse));
+    }
+  }, []);
+
+  const formatResponse = (responseText: string) => {
+    // Define patterns to insert line breaks before
+    const patterns = ["Name:", "Address:", "Reason for the call:", "Emergency status:", "Emergency department requested:", "Address/Location:"];
+
+    // Replace patterns with themselves preceded by <br>, except for the first one
+    let formattedResponse = responseText;
+    patterns.forEach((pattern, index) => {
+        if (index > 0) { // Skip the first pattern to avoid a leading <br>
+            formattedResponse = formattedResponse.replace(pattern, `<br>${pattern}`);
+        }
+    });
+
+    return formattedResponse;
+  };
+
+  let mediaRecorder: MediaRecorder;
+
+  const manageWebSocketConnection = (shouldConnect: boolean) => {
+    if (shouldConnect) {
+      if (!socket || socket.readyState !== WebSocket.OPEN) {
+        navigator.mediaDevices.getUserMedia({ audio: true }).then((stream) => {
+          console.log({ stream });
+          if (!MediaRecorder.isTypeSupported('audio/webm'))
+            return alert('Browser not supported');
+          mediaRecorder = new MediaRecorder(stream, {
+            mimeType: 'audio/webm',
+          });
+          socket = new WebSocket('wss://api.deepgram.com/v1/listen?model=nova-2-general&language=en-US', [
+            'token',
+            '69bdc868a74205816a0617e7024be1fcb8ce3e95',
+          ]);
+          socket.onopen = () => {
+            const connectionElement = document.querySelector('#connection');
+            if (connectionElement) connectionElement.textContent = 'Connected';
+            const circle2 = document.querySelector('#circle2');
+            if (circle2) (circle2 as HTMLElement).style.backgroundColor = '#18E93E';
+            console.log({ event: 'onopen' });
+            mediaRecorder.addEventListener('dataavailable', async (event) => {
+              if (event.data.size > 0 && socket && socket.readyState === WebSocket.OPEN) {
+                socket.send(event.data);
+              }
+            });
+            mediaRecorder.start(100);
+          };
+          socket.onmessage = (message) => {
+            try {
+              const received = JSON.parse(message.data);
+              if (received.channel && received.channel.alternatives && received.channel.alternatives.length > 0) {
+                const transcript = received.channel.alternatives[0].transcript;
+                if (transcript && received.is_final) {
+                  console.log(transcript);
+  
+                  const now = new Date();
+                  const year = now.getFullYear();
+                  const month = String(now.getMonth() + 1).padStart(2, '0'); // Month is zero-indexed
+                  const day = String(now.getDate()).padStart(2, '0');
+                  const hour = String(now.getHours()).padStart(2, '0');
+                  const minute = String(now.getMinutes()).padStart(2, '0');
+                  const second = String(now.getSeconds()).padStart(2, '0');
+                  const timestamp = `${year}/${month}/${day}/${hour}:${minute}:${second}`;
+                  
+                  const existingTranscriptElement = document.querySelector('#transcript');
+                  if (existingTranscriptElement) {
+                    existingTranscriptElement.innerHTML += timestamp + '> ' + transcript + '<br>';
+                  }
+                  const hiddenTranscriptionElement = document.querySelector('#hiddenTranscription');
+                  if (hiddenTranscriptionElement && existingTranscriptElement) {
+                    hiddenTranscriptionElement.textContent = existingTranscriptElement.textContent ?? '';
+                  }
+  
+                  // Store transcript in localStorage
+                  localStorage.setItem('transcript', document.querySelector('#transcript')?.innerHTML ?? '');
+              
+                  const encodedTranscript = encodeURIComponent(document.querySelector('#transcript')?.textContent ?? '');
+                  const url = `https://api.letssign.xyz/chat?prompt=${encodedTranscript}`;
+                  
+                  if (responseToggle) {
+                  
+                    const fetchAPI = (url: string) => {
+                      fetch(url)
+                        .then(response => {
+                          if (!response.ok) {
+                            throw new Error('Network response was not ok');
+                          }
+                          return response.text();
+                        })
+                        .then(data => {
+                          console.log(data);
+                          const responseElement = document.querySelector('#response');
+                          if (responseElement) {
+                            responseElement.textContent = data;
+                          }
+                          // Store response in localStorage
+                          localStorage.setItem('response', document.querySelector('#response')?.textContent ?? '');
+                          apiCounter++;
+                        })
+                        .catch(error => {
+                          console.error('There was a problem with your fetch operation:', error);
+                        });
+                    }
+
+                    const fetchWithRateLimit = (url: string) => {
+                      if (apiCounter >= 10) {
+                        console.log('API rate limit reached. Setting cooldown to 2 seconds.');
+                        setTimeout(() => {
+                          fetchAPI(url);
+                        }, 2000);
+                      } else {
+                        fetchAPI(url);
+                      }
+                    }
+
+                    fetchWithRateLimit(url);
+                  }
+                }
+              } else {
+                console.log('Received message does not contain expected data.');
+              }
+            } catch (error) {
+              console.error('Error processing message:', error);
+            }
+          };
+          socket.onclose = () => {
+            mediaRecorder.stop();
+            console.log('WebSocket Disconnected');
+            const connectionElement = document.querySelector('#connection');
+            if (connectionElement) {
+              connectionElement.textContent = 'Not Connected';
+            }
+          };
+          socket.onerror = (error) => {
+            console.error('WebSocket Error:', error);
+          };
+        }).catch(error => {
+          console.error('Error getting user media:', error);
+        });
+      }
+    } else {
+      if (socket && socket.readyState === WebSocket.OPEN) {
+        socket.close();
+        socket = null;
+        /*
+        if (circle2) {
+          circle2.style.backgroundColor = '#ff0000';
+        }
+        */
+        console.log('WebSocket Disconnected');
+        mediaRecorder.stop();
+        console.log('MediaRecorder Stopped');
+      }
+    }
+  };
+
+  const handleStartButtonClick = () => {
+    if (isRecording) {
+      if (startButtonRef.current) {
+        (startButtonRef.current! as HTMLElement).textContent = 'Start Voice Input';
+        (startButtonRef.current as HTMLElement).style.backgroundColor = '#007bff';
+        (startButtonRef.current as HTMLElement).style.color = '#ffffff';
+      }
+    } else {
+      if (startButtonRef.current) {
+        (startButtonRef.current as HTMLButtonElement).textContent = 'Stop Voice Input';
+        (startButtonRef.current as HTMLButtonElement).style.backgroundColor = '#ff0000';
+        (startButtonRef.current as HTMLButtonElement).style.color = '#ffffff';
+      }
+    }
+    toggleIsRecording();
+    manageWebSocketConnection(isRecording);
+  };
+
+  const handleClearStorageButtonClick = () => {
+    localStorage.removeItem('transcript');
+    localStorage.removeItem('response');
+    setTranscript('');
+    setResponse('');
+    // Do we need more stuff...?
+  };
+
+  const handleToggleResponseButtonClick = () => {
+    setResponseToggle(!responseToggle);
+    // Update button text and styles...
+  };
+
+  const handleExportTranscriptButtonClick = () => {
+    // Export transcript to a file...
+
+  }
 
   return (
     <>
@@ -10,18 +236,48 @@ export default function Home() {
       <main className="flex w-full flex-col" style={{ backgroundColor: "rgb(238, 240, 241)", minHeight: `calc(100vh - ${navbarHeight})`, padding: "24px", overflow: "hidden" }}>
         <div className="flex w-full flex-1 justify-center gap-x-4">
           <div className="bg-white rounded-lg p-4 w-1/2 flex-1 border border-gray-300">
-            boo
+            <div className="left-block" id="container">
+              <div className="sbtn">
+                <button className="btn rounded-outline-button" id="startButton" ref={startButtonRef} onClick={handleStartButtonClick}>Start Voice Input</button>
+              </div>
+              <button className="csbtn rounded-outline-button" id="clearStorageButton" ref={clearStorageButtonRef} onClick={handleClearStorageButtonClick}>Clear Transcript</button>
+              <button className="trbtn rounded-outline-button" id="toggleResponseButton" ref={toggleResponseButtonRef} onClick={handleToggleResponseButtonClick}>Toggle Response</button>
+              <button className="etbtn rounded-outline-button" id="exportTranscriptButton">Export Transcript</button>
+            </div>
           </div>
           <div className="bg-white rounded-lg p-4 w-1/2 flex flex-col border border-gray-300" style={{ minHeight: `calc(100vh - ${navbarHeight} - 48px)` }}>
             <div className="bg-white rounded-lg p-4 flex-grow border border-gray-300 mb-4" style={{ overflowY: 'auto' }}>
-              Top half
+              <div className="transcription">
+                <p>Transcription:</p>
+                <p id="transcript"></p>
+              </div>
             </div>
             <div className="bg-white rounded-lg p-4 flex-grow border border-gray-300" style={{ overflowY: 'auto' }}>
-              Bottom half
+              <div className="output" id="output"><p>Output:</p>
+                <p id="response"></p>
+              </div>
             </div>
           </div>
         </div>
       </main>
+      <style jsx>{`
+        .rounded-outline-button {
+          border-radius: 8px;
+          border: 2px solid #ccc;
+          padding: 8px 16px;
+          margin: 4px;
+          cursor: pointer;
+          outline: none;
+        }
+        .rounded-outline-button:hover {
+          border-color: #007bff;
+        }
+        .rounded-outline-button:focus {
+          border-color: #0056b3;
+        }
+      `}</style>
     </>
   );
 }
+
+export default Page;
