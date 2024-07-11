@@ -199,6 +199,11 @@ useEffect(() => {
         (startButtonRef.current! as HTMLElement).textContent = 'Start Voice Input';
         (startButtonRef.current as HTMLElement).style.backgroundColor = '#4CAF50';
         (startButtonRef.current as HTMLElement).style.color = '#ffffff';
+        socket?.close();
+        socket = null;
+        console.log('WebSocket Disconnected');
+        mediaRecorder.stop();
+        console.log('MediaRecorder Stopped');
       }
     } else {
       if (startButtonRef.current) {
