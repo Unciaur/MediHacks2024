@@ -101,7 +101,7 @@ const Page = () => {
       if (!socket || socket.readyState !== WebSocket.OPEN) {
         navigator.mediaDevices.getUserMedia({ audio: true }).then((stream) => {
           console.log({ stream });
-          if (!MediaRecorder.isTypeSupported('audio/webm'))
+          if (!MediaRecorder.isTypeSupported('audio/webm') || typeof MediaRecorder === "undefined" || !navigator.mediaDevices.getUserMedia)
             return alert('Browser not supported');
           mediaRecorder = new MediaRecorder(stream, {
             mimeType: 'audio/webm',
@@ -230,11 +230,6 @@ const Page = () => {
       }
     }
   };
-
-  if (typeof MediaRecorder === "undefined" || !navigator.mediaDevices.getUserMedia) {
-    alert("MediaRecorder not supported on this browser. Please use a different browser.");
-    return;
-  }
 
   const handleStartButtonClick = () => {
     setIsRecording(!isRecording);
