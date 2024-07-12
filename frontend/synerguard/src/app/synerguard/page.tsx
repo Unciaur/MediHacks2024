@@ -231,6 +231,11 @@ const Page = () => {
     }
   };
 
+  if (typeof MediaRecorder === "undefined" || !navigator.mediaDevices.getUserMedia) {
+    alert("MediaRecorder not supported on this browser. Please use a different browser.");
+    return;
+  }
+
   const handleStartButtonClick = () => {
     setIsRecording(!isRecording);
   };
