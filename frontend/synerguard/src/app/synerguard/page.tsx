@@ -37,6 +37,19 @@ const Page = () => {
   }, [transcript]); // Triggered whenever transcript state changes
 
   useEffect(() => {
+    // Load stored transcript on page load
+    const storedResponse = localStorage.getItem('response');
+    if (storedResponse) {
+      setResponse(storedResponse);
+    }
+  }, []);
+
+  useEffect(() => {
+    // Save transcript to localStorage whenever it changes
+    localStorage.setItem('response', response);
+  }, [response]); // Triggered whenever transcript state changes */
+
+  useEffect(() => {
     if (startButtonRef.current) {
       startButtonRef.current.textContent = isRecording ? 'Stop Voice Input' : 'Start Voice Input';
     }
@@ -60,7 +73,7 @@ const Page = () => {
     let formattedResponse = responseText;
     patterns.forEach((pattern, index) => {
         if (index > 0) { // Skip the first pattern to avoid a leading <br>
-            formattedResponse = formattedResponse.replace(pattern, `<br>${pattern}`);
+            formattedResponse = formattedResponse.replace(pattern, `\n${pattern}`);
         }
     });
 
@@ -109,11 +122,11 @@ const Page = () => {
                   const now = new Date();
                   const timestamp = `${now.getFullYear()}/${String(now.getMonth() + 1).padStart(2, '0')}/${String(now.getDate()).padStart(2, '0')}/${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}:${String(now.getSeconds()).padStart(2, '0')}`;
 
-                  setTranscript(prevTranscript => `${prevTranscript}${timestamp} > ${newTranscript}\n`);
+                  setTranscript(prevTranscript => `${prevTranscript}${timestamp}> ${newTranscript}\n`);
                   
                   const existingTranscriptElement = document.querySelector('#transcript');
                   if (existingTranscriptElement) {
-                    existingTranscriptElement.innerHTML += timestamp + '> ' + transcript + '<br>';
+                    existingTranscriptElement.innerHTML += timestamp + '> ' + newTranscript + '<br>';
                   }
                   const hiddenTranscriptionElement = document.querySelector('#hiddenTranscription');
                   if (hiddenTranscriptionElement && existingTranscriptElement) {
@@ -135,10 +148,13 @@ const Page = () => {
                         })
                         .then(data => {
                           console.log(data);
-                          const responseElement = document.querySelector('#response');
-                          if (responseElement) {
-                            responseElement.textContent = data;
-                          }
+                          setResponse(data);
+                          //console.log(formatResponse(data));
+                          //localStorage.setItem('response', response);
+                          //const responseElement = document.querySelector('#response');
+                          //if (responseElement) {
+                            //responseElement.innerHTML = formatResponse(data);
+                          //}
                         
                           apiCounter++;
                         })
@@ -271,7 +287,12 @@ const Page = () => {
             </div>
             <div className="bg-white rounded-lg p-4 flex-grow border border-gray-300" style={{ overflowY: 'auto' }}>
               <div className="output" id="output"><p>Output:</p>
-                <p id="response"></p>
+                <p id="response">{response.split('\n').map((line, index) => (
+                  <span key={index}>
+                    {line}
+                    {index !== response.split('\n').length - 1 && <br />}
+                    </span>
+                ))}</p>
               </div>
             </div>
           </div>
