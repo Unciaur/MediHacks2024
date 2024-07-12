@@ -7,7 +7,7 @@ import {title} from "process";
 
 const Page = () => {
   const [isRecording, setIsRecording] = useState(false);
-  let [responseToggle, setResponseToggle] = useState(true);
+  const [responseToggle, setResponseToggle] = useState(true);
   let [apiCounter, setApiCounter] = useState(0);
   let [transcript, setTranscript] = useState('');
   let [response, setResponse] = useState('');
@@ -283,7 +283,6 @@ const Page = () => {
               </div>
               <div className="button-row flex justify-center">
                 <button className="csbtn rounded-outline-button" id="clearStorageButton" ref={clearStorageButtonRef} onClick={handleClearStorageButtonClick}>Clear Transcript</button>
-                <button className="trbtn rounded-outline-button" id="toggleResponseButton" ref={toggleResponseButtonRef} onClick={handleToggleResponseButtonClick}>Toggle Response</button>
                 <button className="etbtn rounded-outline-button" id="exportTranscriptButton" ref={transcriptRef} onClick={handleExportTranscriptButtonClick}>Export Transcript</button>
               </div>
             </div>
