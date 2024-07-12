@@ -1,5 +1,5 @@
 import github_logo from '../images/github_logo.png';
-import logo from '../images/logo.png';
+import logo from '../images/logo_no_text_resized.png';
 
 import Image from 'next/image';
 
