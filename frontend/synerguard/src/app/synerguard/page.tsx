@@ -23,7 +23,7 @@ const Page = () => {
   let socket: WebSocket | null = null;
 
 
-  const navbarHeight = '70px';
+  const navbarHeight = '56px';
 
   useEffect(() => {
     // Load stored transcript on page load
