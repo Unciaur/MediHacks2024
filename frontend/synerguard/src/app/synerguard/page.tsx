@@ -232,7 +232,12 @@ const Page = () => {
   };
 
   const handleStartButtonClick = () => {
-    setIsRecording(!isRecording);
+    try {
+      setIsRecording(!isRecording);
+    } catch (error) {
+      console.error('Error occurred:', error);
+      alert('An error occurred. Please try again.');
+    }
   };
 
   const handleClearStorageButtonClick = () => {
