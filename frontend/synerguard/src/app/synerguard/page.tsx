@@ -2,6 +2,8 @@
 
 import React, { useEffect, useState, useRef, RefObject } from 'react';
 import Navbar from '../components/Navbar';
+import Head from "next/head";
+import {title} from "process";
 
 const Page = () => {
   const [isRecording, setIsRecording] = useState(false);
@@ -248,6 +250,10 @@ const Page = () => {
 
   return (
     <>
+      <Head>
+        <title>SynerGuard</title>
+        <meta name="description" content="" />
+      </Head>
       <Navbar />
       <main className="flex w-full flex-col" style={{ backgroundColor: "rgb(238, 240, 241)", minHeight: `calc(100vh - ${navbarHeight})`, padding: "24px", overflow: "hidden" }}>
         <div className="flex w-full flex-1 justify-center gap-x-4">

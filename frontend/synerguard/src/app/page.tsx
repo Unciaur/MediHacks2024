@@ -3,6 +3,8 @@
 import React, { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Navbar from "@/app/components/Navbar";
+import Head from "next/head";
+import { title } from 'process';
 
 const GetStartedPage = () => {
     const router = useRouter()
@@ -17,6 +19,10 @@ const GetStartedPage = () => {
 
     return (
         <>
+            <Head>
+                <title>Get Started</title>
+                <meta name="description" content="Begin your journey here, dispatcher." />
+            </Head>
             <div className={"bg-gradient-radial from-[#5656b7] to-[#000000] h-screen w-screen fixed top-0 left-0 z-[1] bg-dynamic-gradient bg-[length:200%_200%] animate-gradientFlow"}>
                 <Navbar />
                 <div className="font-inter flex flex-col justify-center items-center h-screen noScrollBar">
