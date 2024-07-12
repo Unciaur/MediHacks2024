@@ -136,7 +136,7 @@ const Page = () => {
                     hiddenTranscriptionElement.textContent = transcript ?? '';
                   }
                 
-                  const encodedTranscript = encodeURIComponent(existingTranscriptElement?.textContent ?? '');
+                  const encodedTranscript = encodeURIComponent(existingTranscriptElement?.textContent + "\n" + newTranscript);
                   const url = `https://api.letssign.xyz/chat?prompt=${encodedTranscript}`;
                   
                   if (responseToggle) {
