@@ -36,6 +36,7 @@ const Page = () => {
   useEffect(() => {
     // Save transcript to localStorage whenever it changes
     localStorage.setItem('transcript', transcript);
+    setTranscript(transcript);
   }, [transcript]); // Triggered whenever transcript state changes
 
   useEffect(() => {
