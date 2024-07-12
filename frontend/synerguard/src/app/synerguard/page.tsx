@@ -36,8 +36,7 @@ const Page = () => {
   useEffect(() => {
     // Save transcript to localStorage whenever it changes
     localStorage.setItem('transcript', transcript);
-    setTranscript(transcript);
-  }, [transcript]); // Triggered whenever transcript state changes
+  }, [transcript]);
 
   useEffect(() => {
     // Load stored response on page load
@@ -244,7 +243,7 @@ const Page = () => {
   };
 
   const handleToggleResponseButtonClick = () => {
-    setResponseToggle(currentState => !currentState);
+    setResponseToggle(!responseToggle);
     console.log(responseToggle);
     // Update button text and styles...
   };
