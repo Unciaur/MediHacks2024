@@ -8,10 +8,17 @@ const config: Config = {
   ],
   theme: {
     extend: {
+      fontFamily: {
+        inter: ['Inter', 'sans-serif'],
+      },
+      animation: {
+        gradientFlow: 'gradientFlow 10s ease infinite',
+      },
       backgroundImage: {
-        "gradient-radial": "radial-gradient(var(--tw-gradient-stops))",
-        "gradient-conic":
-          "conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops))",
+        'dynamic-gradient': 'linear-gradient(90deg, #6c6ce5, #000000)',
+      },
+      backgroundSize: {
+        '200%': '200%',
       },
     },
   },
