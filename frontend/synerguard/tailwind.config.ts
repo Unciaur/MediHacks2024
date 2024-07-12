@@ -15,7 +15,7 @@ const config: Config = {
         gradientFlow: 'gradientFlow 10s ease infinite',
       },
       backgroundImage: {
-        'dynamic-gradient': 'linear-gradient(90deg, #6c6ce5, #000000)',
+        'dynamic-gradient': 'linear-gradient(90deg, #404089, #000000)',
       },
       backgroundSize: {
         '200%': '200%',
