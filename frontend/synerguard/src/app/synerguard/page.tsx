@@ -68,6 +68,18 @@ const Page = () => {
     };
   }, [isRecording]);
 
+  useEffect(() => {
+    if (responseToggle) {
+      if (toggleResponseButtonRef.current) {
+        toggleResponseButtonRef.current.textContent = 'Disable Response';
+      }
+    } else {
+      if (toggleResponseButtonRef.current) {
+        toggleResponseButtonRef.current.textContent = 'Enable Response';
+      }
+    }
+  }, [responseToggle]);
+
   const formatResponse = (responseText: string) => {
     // Define patterns to insert line breaks before
     const patterns = ["Name:", "Address:", "Reason for the call:", "Emergency status:", "Emergency department requested:", "Address/Location:"];
@@ -232,7 +244,8 @@ const Page = () => {
   };
 
   const handleToggleResponseButtonClick = () => {
-    setResponseToggle(!responseToggle);
+    setResponseToggle(currentState => !currentState);
+    console.log(responseToggle);
     // Update button text and styles...
   };
 
