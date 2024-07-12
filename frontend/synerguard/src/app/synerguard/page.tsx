@@ -39,7 +39,7 @@ const Page = () => {
   }, [transcript]); // Triggered whenever transcript state changes
 
   useEffect(() => {
-    // Load stored transcript on page load
+    // Load stored response on page load
     const storedResponse = localStorage.getItem('response');
     if (storedResponse) {
       setResponse(storedResponse);
@@ -128,14 +128,14 @@ const Page = () => {
                   
                   const existingTranscriptElement = document.querySelector('#transcript');
                   if (existingTranscriptElement) {
-                    existingTranscriptElement.innerHTML += timestamp + '> ' + newTranscript + '<br>';
+                    //existingTranscriptElement.innerHTML += timestamp + '> ' + newTranscript + '<br>';
                   }
                   const hiddenTranscriptionElement = document.querySelector('#hiddenTranscription');
                   if (hiddenTranscriptionElement && existingTranscriptElement) {
-                    hiddenTranscriptionElement.textContent = existingTranscriptElement.textContent ?? '';
+                    hiddenTranscriptionElement.textContent = transcript ?? '';
                   }
                 
-                  const encodedTranscript = encodeURIComponent(document.querySelector('#transcript')?.textContent ?? '');
+                  const encodedTranscript = encodeURIComponent(transcript);
                   const url = `https://api.letssign.xyz/chat?prompt=${encodedTranscript}`;
                   
                   if (responseToggle) {
