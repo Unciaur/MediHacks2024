@@ -249,17 +249,22 @@ const Page = () => {
   };
 
   const handleExportTranscriptButtonClick = () => {
-    // Export transcript to a file...
-    const blob = new Blob([transcript], { type: 'text/plain' });
+    const combinedContent = `Transcript:\n${transcript}\n\nResponse:\n${response}`;
+
+    const blob = new Blob([combinedContent], { type: 'text/plain' });
+
     const url = URL.createObjectURL(blob);
+
     const a = document.createElement('a');
     a.href = url;
-    a.download = 'transcript.txt';
+    a.download = 'transcript_and_response.txt';
+
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);
+
     URL.revokeObjectURL(url);
-  }
+  };
 
   return (
     <>
