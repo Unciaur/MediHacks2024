@@ -47,7 +47,7 @@ public class ChatController {
     @Value("${openai.api.url}")
     private String apiUrl;
 
-    @CrossOrigin(origins = "https://medi.letssign.xyz/")
+    @CrossOrigin(origins = "*")
     @GetMapping("/chat")
     public DeferredResult<ResponseEntity<?>> chat(@RequestParam String prompt) {
         DeferredResult<ResponseEntity<?>> output = new DeferredResult<>();
