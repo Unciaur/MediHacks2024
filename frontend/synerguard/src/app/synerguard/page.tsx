@@ -4,6 +4,7 @@ import React, { useEffect, useState, useRef, RefObject } from 'react';
 import Navbar from '../components/Navbar';
 import Head from "next/head";
 import {title} from "process";
+import { stringify } from 'querystring';
 
 const Page = () => {
   const [isRecording, setIsRecording] = useState(false);
@@ -254,7 +255,7 @@ const Page = () => {
   };
 
   const handleExportTranscriptButtonClick = () => {
-    const combinedContent = `Transcript:\n${transcript}\n\nResponse:\n${response}`;
+    const combinedContent = `Transcript:\n${transcript.toString()}\n\nResponse:\n${response.toString()}`;
 
     const blob = new Blob([combinedContent], { type: 'text/plain' });
 
@@ -262,7 +263,31 @@ const Page = () => {
 
     const a = document.createElement('a');
     a.href = url;
-    a.download = 'transcript_and_response.txt';
+    if (response.includes("Fire") && response.includes("Police") && response.includes("EMS")){
+      a.download = 'transcript_and_response_fire+police+EMS.txt';
+    }
+      else if (response.includes("Police") && response.includes("EMS")){
+      a.download = 'transcript_and_response_police+EMS.txt';
+    }
+      else if (response.includes("Fire") && response.includes("Police")){
+      a.download = 'transcript_and_response_police+fire.txt';
+    }
+      else if (response.includes("Fire") && response.includes("EMS")){
+      a.download = 'transcript_and_response_EMS+fire.txt';
+    }
+      else if (response.toString().includes("Police")){
+      a.download = 'transcript_and_response_police.txt';
+    }
+      else if (response.toString().includes("Fire")){
+      a.download = 'transcript_and_response_fire.txt';
+    }
+     else if (response.toString().includes("EMS")){
+      a.download = 'transcript_and_response_EMS.txt';
+    }
+     else {
+      a.download = 'transcript_and_response.txt';
+    }
+    
 
     document.body.appendChild(a);
     a.click();
@@ -298,7 +323,7 @@ const Page = () => {
             
           </div>
           <div className="bg-white rounded-lg p-4 w-1/2 flex flex-col border border-gray-300" style={{ minHeight: `calc(100vh - ${navbarHeight} - 48px)` }}>
-            <div className="bg-white rounded-lg p-4 flex-grow border border-gray-300 mb-4" style={{ overflowY: 'auto' }}>
+            <div className="bg-white rounded-lg p-4 border border-gray-300 mb-4 h-1/2" style={{ overflowY: 'scroll' }}>
               <div className="transcription">
                 <p>Transcription:</p>
 
@@ -313,7 +338,7 @@ const Page = () => {
 
               </div>
             </div>
-            <div className="bg-white rounded-lg p-4 flex-grow border border-gray-300" style={{ overflowY: 'auto' }}>
+            <div className="bg-white rounded-lg p-4 border border-gray-300 h-1/2" style={{ overflowY: 'scroll' }}>
               <div className="output" id="output"><p>Output:</p>
                 <p id="response">{response.split('\n').map((line, index) => (
                   <span key={index}>
