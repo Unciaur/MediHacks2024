@@ -25,7 +25,7 @@ const GetStartedPage = () => {
             </Head>
             <div className={"bg-gradient-radial from-[#5656b7] to-[#000000] h-screen w-screen fixed top-0 left-0 z-[1] bg-dynamic-gradient bg-[length:200%_200%] animate-gradientFlow"}>
                 <Navbar />
-                <div className="font-inter flex flex-col justify-center items-center h-screen noScrollBar">
+                <div className="font-inter flex flex-col justify-center items-center h-screen display-grid place-items-center">
                     <p className="text-center mt-[-50px] mb-2.5 text-6xl text-white">
                         Welcome to SynerGuard
                     </p>

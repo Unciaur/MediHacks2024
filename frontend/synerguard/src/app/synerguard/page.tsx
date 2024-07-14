@@ -5,6 +5,7 @@ import Navbar from '../components/Navbar';
 import Head from "next/head";
 import {title} from "process";
 import { stringify } from 'querystring';
+<meta name="viewport" content="width=device=width, initial-scale=1"></meta>
 
 const Page = () => {
   const [isRecording, setIsRecording] = useState(false);
