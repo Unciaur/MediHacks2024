@@ -303,6 +303,7 @@ const Page = () => {
         <title>SynerGuard</title>
         <meta name="description" content="" />
       </Head>
+      <body>
       <Navbar />
       <main className="flex w-full flex-col" style={{ backgroundColor: "rgb(238, 240, 241)", minHeight: `calc(100vh - ${navbarHeight})`, padding: "24px", overflow: "hidden" }}>
         <div className="flex w-full flex-1 justify-center gap-x-4">
@@ -352,8 +353,11 @@ const Page = () => {
           </div>
         </div>
       </main>
+      </body>
       <style jsx>{`
-
+        body{
+        overflow: hidden;
+        }
         .button-container {
           display: flex;
           flex-direction: column;

@@ -4,7 +4,12 @@ import React, { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Navbar from "@/app/components/Navbar";
 import Head from "next/head";
+import lock from './lock.png';
+import efficiency from './efficiency.png';
+import money from './money.png';
+import Image from 'next/image';
 import { title } from 'process';
+
 
 const GetStartedPage = () => {
     const router = useRouter()
@@ -23,9 +28,10 @@ const GetStartedPage = () => {
                 <title>Get Started</title>
                 <meta name="description" content="Begin your journey here, dispatcher." />
             </Head>
-            <div className={"bg-gradient-radial from-[#5656b7] to-[#000000] h-screen w-screen fixed top-0 left-0 z-[1] bg-dynamic-gradient bg-[length:200%_200%] animate-gradientFlow"}>
-                <Navbar />
-                <div className="font-inter flex flex-col justify-center items-center h-screen display-grid place-items-center">
+            
+            <body className="overflow-scroll" style={{backgroundColor: "rgb(108, 108, 229)"}}>
+            <Navbar/>
+                <div className="flex flex-col place-items-center font-inter justify-center items-center w-screen h-[1000px] bg-gradient-radial w-screen from-[#5656b7] to-[#000000] bg-dynamic-gradient animate-gradientFlow">
                     <p className="text-center mt-[-50px] mb-2.5 text-6xl text-white">
                         Welcome to SynerGuard
                     </p>
@@ -36,7 +42,43 @@ const GetStartedPage = () => {
                         Get Started
                     </button>
                 </div>
+            
+            <div className={"flex items-center justify-center bg-white w-screen h-[500px]"} style={{backgroundColor: 'white' }}>
+            <section className="flex flex-row place-items-center justify-center items-center w-screen h-[500px]">
+                <div className={"flex flex-col items-center text-center justify-center h-[350px] w-[350px] m-auto text-3xl border rounded-xl border-gray-400"} style={{color: "rgb(50,51,56)"}}>
+                    <Image src={lock} alt="lock" className="h-[200px] w-[200px]"/>
+                    Privacy
+                    <p className="text-sm mt-[20px] w-[320px]">Call transcripts and AI generated information are not sent to any other application or saved to our server to ensure user privacy.</p>
+                </div>
+                <div className={"flex flex-col items-center text-center justify-center h-[350px] w-[350px] m-auto text-3xl border rounded-xl border-gray-400"} style={{color: "rgb(50,51,56)" }}>
+                    <Image src={efficiency} alt="efficiency" className="h-[170px] w-[170px] m-[7px] mb-[19px]"/>
+                    Efficiency
+                    <p className="text-sm mt-[20px] w-[320px]">Quickly extrapolates relevant information to be sent to emergency services and improve response times. </p>
+                </div>
+                <div className={"flex flex-col items-center text-center justify-center h-[350px] w-[350px] m-auto text-3xl border rounded-xl border-gray-400"} style={{color: "rgb(50,51,56)" }}>
+                <Image src={money} alt="money" className="h-[170px] w-[180px] m-[9px] mb-[9px]"/>
+                    Cost
+                    <p className="text-sm mt-[20px] w-[320px]">Completely FREE to give all the same access to life-saving technology, especially in lower-income areas affected by outdated equipment.
+                    </p>
+                </div>
+                </section>
             </div>
+            
+            </body>
+            <style jsx>{`
+        body{
+        overflowY: scroll;
+        }
+        section{
+        animation: fade-in linear;
+        animation-timeline: view();
+        animation-range: entry 0%;
+        }
+        @keyframes fade-in{
+        from {scale: .8; opacity: 0;}
+        to {scale: 1; opacity: 1;}
+        }
+      `}</style>
         </>
     );
 };
