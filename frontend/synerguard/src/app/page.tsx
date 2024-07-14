@@ -32,7 +32,7 @@ const GetStartedPage = () => {
                     <p className="text-center mb-5 text-xl text-white">
                         Press the button below to begin your journey
                     </p>
-                    <button onClick={handleGetStartedClick} className="bg-blue-500 text-white py-2.5 px-5 rounded-full border-none cursor-pointer">
+                    <button onClick={handleGetStartedClick} className="text-white py-2.5 px-5 rounded-full border-none cursor-pointer" style={{ backgroundColor: "rgb(108, 108, 229)"}}>
                         Get Started
                     </button>
                 </div>

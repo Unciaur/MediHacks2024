@@ -383,7 +383,7 @@ const Page = () => {
         }
 
         .circular-button:hover {
-          border-color: #007bff;
+          border-color: #6c6ce5;
         }
 
         .rounded-outline-button {
@@ -395,7 +395,7 @@ const Page = () => {
           outline: none;
         }
         .rounded-outline-button:hover {
-          border-color: #007bff;
+          border-color: #6c6ce5;
         }
         .rounded-outline-button:focus {
           border-color: #0056b3;
