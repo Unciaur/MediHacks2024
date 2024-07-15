@@ -78,7 +78,7 @@ const GetStartedPage = () => {
                 <div id="human-touch" className="flex flex-col text-center mb-[20px]">
                     The Human Touch
                 </div>
-                <div id="the-human-touch" className="flex flex-col text-center text-lg mb-[30px] m-[20px]">
+                <div id="the-human-touch" className="flex text-center text-lg mb-[30px] m-[20px]">
                 While competing softwares utilize an automated answering feature, our product maintains arguably the most important part of an emergency call – the human touch. We believe that the most critical part of a 911 call is the unique human ability to connect with the caller that every dispatcher, regardless of their experience, possesses. SynerGuard allows dispatchers to refine that ability while decreasing their stress by removing the automated parts of their job.
                 </div>
             </div>
@@ -125,19 +125,19 @@ const GetStartedPage = () => {
             scale .8; opacity: 0;
             animation: fade-in linear forwards;
             animation-timeline: view();
-            animation-range: entry 0%;
+            animation-range: entry 0% 600px;
         }
         #humanity {
             scale .8; opacity: 0;
             animation: fade-in linear forwards;
             animation-timeline: view();
-            animation-range: entry 60%;
+            animation-range: entry 60% 550px;
         }
         #the-human-touch {
             scale .8; opacity: 0;
             animation: fade-in linear forwards;
             animation-timeline: view();
-            animation-range: entry 10%;
+            animation-range: entry 10% 500px;
         }
         
         @keyframes fade-in{
