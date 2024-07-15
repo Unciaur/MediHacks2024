@@ -7,6 +7,8 @@ import Head from "next/head";
 import lock from './lock.png';
 import efficiency from './efficiency.png';
 import money from './money.png';
+import humanity from './humanity.png';
+import whitelogo from './white logo.png';
 import Image from 'next/image';
 import { title } from 'process';
 
@@ -63,14 +65,25 @@ const GetStartedPage = () => {
                 </div>
                 </section>
             </div>
-            <div className="flex flex-col place-items-center font-inter justify-center items-center w-screen h-[1000px] bg-gradient-radial w-screen from-[#5656b7] to-[#000000] bg-[length:200%_200%] bg-dynamic-gradient animate-gradientFlow text-5xl" style={{color: "white"}}>
+            <div className="flex flex-col font-inter justify-center w-screen h-[1200px] bg-gradient-radial w-screen from-[#5656b7] to-[#000000] bg-[length:200%_200%] bg-dynamic-gradient animate-gradientFlow text-5xl" style={{color: "white"}}>
                 <div id="our-mission" className="flex flex-col text-center mb-[20px]">
                     Our Mission
-                    
                 </div>
-                <div id="mission-statement" className="flex text-center text-lg mb-[400px]">
+                <div id="mission-statement" className="flex text-center text-lg mb-[150px] m-[20px]">
                     We aim to assist dispatchers by eliminating menial tasks that can cause them to lose focus in a situation where even a few seconds can be the difference between life and death. Our software decreases the time between the call and the arrival of emergency services and allows dispatchers to improve personal connection with the caller and soothe them during their emergency instead of multitasking.
                 </div>
+                <div  id="humanity" className="flex flex-col place-items-center justify-center items-center">
+                <Image src={humanity} alt="humanity" className="h-[170px] w-[180px] m-[9px] mb-[9px]"/>
+                </div>
+                <div id="human-touch" className="flex flex-col text-center mb-[20px]">
+                    The Human Touch
+                </div>
+                <div id="the-human-touch" className="flex flex-col text-center text-lg mb-[30px] m-[20px]">
+                While competing softwares utilize an automated answering feature, our product maintains arguably the most important part of an emergency call – the human touch. We believe that the most critical part of a 911 call is the unique human ability to connect with the caller that every dispatcher, regardless of their experience, possesses. SynerGuard allows dispatchers to refine that ability while decreasing their stress by removing the automated parts of their job.
+                </div>
+            </div>
+            <div className="flex h-[120px] w-screen" style={{backgroundColor: "rgb(108, 108, 229)"}}>
+            <Image src={whitelogo} alt="white logo" className="h-[110px] w-[180px] mt-[5px] mb-[19px]"/>
             </div>
             </body>
             <style jsx>{`
@@ -108,9 +121,30 @@ const GetStartedPage = () => {
             animation-timeline: view();
             animation-range: entry 60% 400px;
         }
+        #human-touch {
+            scale .8; opacity: 0;
+            animation: fade-in linear forwards;
+            animation-timeline: view();
+            animation-range: entry 0%;
+        }
+        #humanity {
+            scale .8; opacity: 0;
+            animation: fade-in linear forwards;
+            animation-timeline: view();
+            animation-range: entry 60%;
+        }
+        #the-human-touch {
+            scale .8; opacity: 0;
+            animation: fade-in linear forwards;
+            animation-timeline: view();
+            animation-range: entry 10%;
+        }
+        
         @keyframes fade-in{
         to {scale: 1; opacity: 1;}
         }
+        
+
       `}</style>
         </>
     );
