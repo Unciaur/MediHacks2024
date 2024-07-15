@@ -31,7 +31,7 @@ const GetStartedPage = () => {
             
             <body className="overflow-scroll" style={{backgroundColor: "rgb(108, 108, 229)"}}>
             <Navbar/>
-                <div className="flex flex-col place-items-center font-inter justify-center items-center w-screen h-[1000px] bg-gradient-radial w-screen from-[#5656b7] to-[#000000] bg-dynamic-gradient animate-gradientFlow">
+                <div className="flex flex-col place-items-center font-inter justify-center items-center w-screen h-screen bg-gradient-radial w-screen from-[#5656b7] to-[#000000] bg-[length:200%_200%] bg-dynamic-gradient animate-gradientFlow">
                     <p className="text-center mt-[-50px] mb-2.5 text-6xl text-white">
                         Welcome to SynerGuard
                     </p>
@@ -63,11 +63,19 @@ const GetStartedPage = () => {
                 </div>
                 </section>
             </div>
-            
+            <div className="flex flex-col place-items-center font-inter justify-center items-center w-screen h-[1000px] bg-gradient-radial w-screen from-[#5656b7] to-[#000000] bg-[length:200%_200%] bg-dynamic-gradient animate-gradientFlow text-5xl" style={{color: "white"}}>
+                <div id="our-mission" className="flex flex-col mb-[20px]">
+                    Our Mission
+                    
+                </div>
+                <p id="mission-statement" className="text-sm text-center mb-[400px]">
+                    We aim to assist dispatchers by eliminating menial tasks that can cause them to lose focus in a situation where even a few seconds can be the difference between life and death. Our software decreases the time between the call and the arrival of emergency services and allows dispatchers to improve personal connection with the caller and soothe them during their emergency instead of multitasking.
+                </p>
+            </div>
             </body>
             <style jsx>{`
         body{
-        overflowY: scroll;
+        overflow-x: hidden;
         }
         #privacy {
             scale: .8; opacity: 0;
@@ -87,6 +95,18 @@ const GetStartedPage = () => {
             animation: fade-in linear forwards;
             animation-timeline: view();
             animation-range: entry 80%;
+        }
+        #our-mission {
+            scale: .8; opacity: 0;
+            animation: fade-in linear forwards;
+            animation-timeline: view();
+            animation-range: entry 0% 400px;
+        }
+        #mission-statement {
+            scale: .8; opacity: 0;
+            animation: fade-in linear forwards;
+            animation-timeline: view();
+            animation-range: entry 70% 400px;
         }
         @keyframes fade-in{
         to {scale: 1; opacity: 1;}
